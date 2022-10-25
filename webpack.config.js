@@ -1,8 +1,3 @@
-/**
- * @Author: Caven
- * @Date: 2021-07-01 20:10:00
- */
-
 'use strict'
 
 const path = require('path')
@@ -17,7 +12,7 @@ module.exports = (env, argv) => {
   return {
     mode: IS_PROD ? 'production' : 'development',
     entry: {
-      app: path.resolve(__dirname, 'src/index.js'),
+      app: path.resolve(__dirname, 'src/'),
     },
     devServer: {
       hot: true,
@@ -29,8 +24,7 @@ module.exports = (env, argv) => {
     },
     devtool: IS_PROD ? false : 'cheap-module-source-map',
     module: {
-      rules: [
-        {
+      rules: [{
           test: /\.js$/,
           exclude: /node_modules/,
           loader: 'babel-loader',
@@ -40,6 +34,11 @@ module.exports = (env, argv) => {
             compact: false,
             ignore: ['checkTree'],
           },
+        },
+        {
+          test: /\.tsx?$/,
+          use: 'ts-loader',
+          exclude: /node_modules/,
         },
         {
           test: /\.css$/,
@@ -74,43 +73,40 @@ module.exports = (env, argv) => {
         },
       ],
     },
-    optimization: IS_PROD
-      ? {
-          minimize: true,
-          minimizer: [
-            new TerserPlugin({
-              extractComments: false,
-            }),
-          ],
-          splitChunks: {
-            chunks: 'async',
-            minSize: 30000,
-            maxSize: 0,
-            minChunks: 1,
-            automaticNameDelimiter: '~',
-            cacheGroups: {
-              vendors: {
-                name: 'chunk-vendors',
-                test: /[\\/]node_modules[\\/]/,
-                priority: -10,
-                chunks: 'initial',
-              },
-              common: {
-                name: 'chunk-common',
-                minChunks: 2,
-                priority: -20,
-                chunks: 'initial',
-                reuseExistingChunk: true,
-              },
-            },
+    optimization: IS_PROD ? {
+      minimize: true,
+      minimizer: [
+        new TerserPlugin({
+          extractComments: false,
+        }),
+      ],
+      splitChunks: {
+        chunks: 'async',
+        minSize: 30000,
+        maxSize: 0,
+        minChunks: 1,
+        automaticNameDelimiter: '~',
+        cacheGroups: {
+          vendors: {
+            name: 'chunk-vendors',
+            test: /[\\/]node_modules[\\/]/,
+            priority: -10,
+            chunks: 'initial',
           },
-        }
-      : {},
+          common: {
+            name: 'chunk-common',
+            minChunks: 2,
+            priority: -20,
+            chunks: 'initial',
+            reuseExistingChunk: true,
+          },
+        },
+      },
+    } : {},
     plugins: [
       new MiniCssExtractPlugin(),
       new CopywebpackPlugin({
-        patterns: [
-          {
+        patterns: [{
             from: path.join(__dirname, 'public'),
             to: path.join(__dirname, 'dist'),
             globOptions: {
@@ -128,7 +124,7 @@ module.exports = (env, argv) => {
       }),
     ],
     resolve: {
-      extensions: ['.js', '.json', '.css'],
+      extensions: ['.js', '.json', '.css', '.ts', '.tsx'],
       alias: {
         '@': path.resolve(__dirname, 'src'),
       },
