@@ -4,4 +4,5 @@ declare global {
   var Config: any
   var Http: any
 }
+
 export { }

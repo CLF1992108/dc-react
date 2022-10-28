@@ -1,19 +1,66 @@
-import React, { Component } from 'react'
-import { Viewer } from '../components/Viewer'
-import HcViewer from '../core/HCViewer'
+import React from "react";
+import { Viewer } from "../components/Viewer";
+import HcViewer from "../core/HCViewer";
+import { MapOptions } from "../core/type";
 
 export interface AppProps {}
+
 const App: React.FC<AppProps> = (AppProps) => {
   const _onViewerCreated = (viewer: any) => {
-    let viewerApi = new HcViewer(viewer)
-    viewerApi.addBaseLayer()
-    global.viewerApi = viewerApi
-  }
+    const aMapImgOptions: MapOptions = {
+      iconUrl: "https://dc.dvgis.cn/examples/images/icon/img.png",
+      iconName: "高德影像",
+      style: "img",
+      crs: "WGS84",
+      cva: true,
+      type: DC.ImageryType.AMAP,
+    };
+    const aMapVecOptions: MapOptions = {
+      iconUrl: "https://dc.dvgis.cn/examples/images/icon/elec.png",
+      iconName: "高德电子",
+      style: "vec",
+      crs: "WGS84",
+      cva: true,
+      type: DC.ImageryType.AMAP,
+    };
+    const tdtImgOptions: MapOptions = {
+      iconUrl: "https://dc.dvgis.cn/examples/images/icon/img.png",
+      iconName: "天地图影像",
+      key: "02a9d2a704f39cf2d5d7c6b668c51330",
+      style: "img",
+      cva: true,
+      type: DC.ImageryType.TDT,
+    };
+    const tdtVecOptions: MapOptions = {
+      iconUrl: "https://dc.dvgis.cn/examples/images/icon/elec.png",
+      iconName: "天地图电子",
+      key: "02a9d2a704f39cf2d5d7c6b668c51330",
+      style: "vec",
+      cva: true,
+      type: DC.ImageryType.TDT,
+    };
+    const nightOptions: MapOptions = {
+      iconUrl: "http://am-img.gkiiot.com/editor/textures/water.png",
+      iconName: "夜晚",
+      url: "https://dc.dvgis.cn/examples/images/tile/world_n.jpg",
+      type: DC.ImageryType.SINGLE_TILE,
+    };
+    let baseLayers = [
+      aMapImgOptions,
+      aMapVecOptions,
+      tdtImgOptions,
+      tdtVecOptions,
+      nightOptions,
+    ];
+    let viewerApi = new HcViewer(viewer);
+    viewerApi.addBaseLayer(baseLayers);
+    global.viewerApi = viewerApi;
+  };
   return (
     <div className="home">
       <Viewer onViewerCreated={_onViewerCreated} />
     </div>
-  )
-}
+  );
+};
 
-export default App
+export default App;

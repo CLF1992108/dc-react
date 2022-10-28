@@ -1,3 +1,5 @@
+import { MapOptions } from "./type"
+
 class HcViewer {
   private viewer
   constructor(viewer: any) {
@@ -9,12 +11,37 @@ class HcViewer {
   get Viewer() {
     return this.viewer
   }
+  addBaseLayer(options: MapOptions[]) {
+    options.forEach((option => {
+      let { iconUrl, iconName, style, crs, cva, url, key, type } = option,
+        layers: any[] = [],
+        cvaLayer
 
-  addBaseLayer() {
-    let baseLayer = DC.ImageryLayerFactory.createAmapImageryLayer({
-      style: 'img',
-    })
-    this.viewer.addBaseLayer(baseLayer)
+      const layer = DC.ImageryLayerFactory.createImageryLayer(type, {
+        url,
+        style,
+        key,
+        crs,
+      })
+      layers.push(layer)
+
+      if (cva) {
+        cvaLayer = DC.ImageryLayerFactory.createImageryLayer(type, {
+          url,
+          style: "cva",
+          key,
+          crs,
+        })
+        layers.push(cvaLayer)
+      }
+
+      this.viewer.addBaseLayer(layers, {
+        iconUrl,
+        name: iconName
+      })
+
+    }))
+
     return this
   }
 }

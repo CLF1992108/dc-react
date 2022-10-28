@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios, { AxiosInstance } from 'axios'
 
 const instance = axios.create({
   timeout: 15000,
@@ -12,21 +12,21 @@ class HttpLoader {
   }
 }
 
-function initInterceptors(instance) {
+function initInterceptors(instance: AxiosInstance) {
   instance.interceptors.request.use(
-    (config) => {
+    (config: any) => {
       return config
     },
-    (error) => {
+    (error: any) => {
       return Promise.reject(error)
     }
   )
 
   instance.interceptors.response.use(
-    (response) => {
+    (response: any) => {
       return response
     },
-    (error) => {
+    (error: any) => {
       return Promise.reject(error)
     }
   )

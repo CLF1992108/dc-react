@@ -6,7 +6,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const CopywebpackPlugin = require('copy-webpack-plugin')
 const TerserPlugin = require('terser-webpack-plugin')
 const dvgisDist = './node_modules/@dvgis'
-
+const webpack = require('webpack')
 module.exports = (env, argv) => {
   const IS_PROD = (argv && argv.mode === 'production') || false
   return {
@@ -14,15 +14,21 @@ module.exports = (env, argv) => {
     entry: {
       app: path.resolve(__dirname, 'src/'),
     },
-    devServer: {
-      hot: true,
-    },
     output: {
       filename: '[name].bundle.js',
       path: path.resolve(__dirname, 'dist'),
       publicPath: IS_PROD ? '/' : '/',
     },
     devtool: IS_PROD ? false : 'cheap-module-source-map',
+    devServer: {
+      progress: true, // 命令行中会显示打包的进度
+      liveReload: true,
+      port: 9000,
+      filename: 'tsc_out.js',
+      writeToDisk: (filename) => {
+        return /tsc_out.js/.test(filename)
+      }, // 传入一个函数用来筛选哪些文件需要写入硬盘
+    },
     module: {
       rules: [{
           test: /\.js$/,
@@ -104,6 +110,7 @@ module.exports = (env, argv) => {
       },
     } : {},
     plugins: [
+      new webpack.HotModuleReplacementPlugin(),
       new MiniCssExtractPlugin(),
       new CopywebpackPlugin({
         patterns: [{
