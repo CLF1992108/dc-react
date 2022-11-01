@@ -1,4 +1,5 @@
 import React from "react";
+import LayerManage from "../components/LayerManage";
 import { Viewer } from "../components/Viewer";
 import HcViewer from "../core/HCViewer";
 import { MapOptions } from "../core/type";
@@ -40,9 +41,9 @@ const App: React.FC<AppProps> = (AppProps) => {
       type: DC.ImageryType.TDT,
     };
     const nightOptions: MapOptions = {
-      iconUrl: "http://am-img.gkiiot.com/editor/textures/water.png",
-      iconName: "夜晚",
-      url: "https://dc.dvgis.cn/examples/images/tile/world_n.jpg",
+      iconUrl: "http://am-img.gkiiot.com/editor/textures/暖色2.jpg",
+      iconName: "暖色",
+      url: "http://am-img.gkiiot.com/editor/textures/map19x1_5.png",
       type: DC.ImageryType.SINGLE_TILE,
     };
     let baseLayers = [
@@ -58,6 +59,7 @@ const App: React.FC<AppProps> = (AppProps) => {
   };
   return (
     <div className="home">
+      <LayerManage></LayerManage>
       <Viewer onViewerCreated={_onViewerCreated} />
     </div>
   );

@@ -1,0 +1,116 @@
+// 类型接口
+[
+  {
+    "result": [
+      {
+        "id": "0",
+        "type": "type01",
+        "icon": "icon1.jpg",
+        "name": "流量计",
+        "eleType": "point"
+      },
+      {
+        "id": "1",
+        "type": "type02",
+        "icon": "icon2.jpg",
+        "name": "高压管段",
+        "eleType": "line"
+      }
+    ]
+  },
+  // 属性维护接口
+  {
+    "result": [
+      {
+        "id": "0",
+        "title": "FC1",
+        "type": "text",
+        "name": "字段1",
+        "unit": ""
+      },
+      {
+        "id": "1",
+        "title": "FC2",
+        "type": "float",
+        "name": "字段2",
+        "unit": "m"
+      },
+      {
+        "id": "1",
+        "title": "FC3",
+        "type": "select",
+        "name": "字段2",
+        "options": [
+          {
+            "label": "选择1",
+            "value": "1"
+          },
+          {
+            "label": "选择2",
+            "value": "2"
+          }
+        ],
+        "unit": ""
+      }
+    ]
+  },
+  // 元件接口
+  {
+    "result": [
+      {
+        "id": "0",
+        "type": "type01",
+        "name": "设备1",
+        "eleType": "point",
+        "position": [
+          111,
+          23
+        ],
+        "property": [
+          {
+            "title": "FC1",
+            "value": "1"
+          },
+          {
+            "title": "FC2",
+            "value": "4"
+          }
+        ]
+      },
+      {
+        "id": "1",
+        "type": "type02",
+        "name": "设备2",
+        "eleType": "line",
+        "position": [
+          111,
+          26
+        ],
+        "points": [
+          [
+            111,
+            26
+          ],
+          [
+            111,
+            26.1
+          ],
+          [
+            111,
+            26.2
+          ]
+        ],
+        "property": [
+          {
+            "title": "FC1",
+            "value": "2"
+          },
+          {
+            "title": "FC2",
+            "value": "3"
+          }
+        ]
+      }
+    ]
+  }
+]
