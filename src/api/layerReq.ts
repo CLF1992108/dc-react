@@ -12,7 +12,7 @@ export async function getTypeList(params: any) {
         "type": "type01",
         "icon": "icon1.jpg",
         "name": "流量计",
-        "eleType": "point",
+        "eleType": "billboard",
         "checked": true
       },
       {
@@ -20,7 +20,7 @@ export async function getTypeList(params: any) {
         "type": "type02",
         "icon": "icon2.jpg",
         "name": "高压管段",
-        "eleType": "line",
+        "eleType": "polyline",
         "checked": false
       }
     ]

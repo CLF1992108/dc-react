@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import LayerManage from "../components/LayerManage";
 import { Viewer } from "../components/Viewer";
 import HcViewer from "../core/HCViewer";
