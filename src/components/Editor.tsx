@@ -7,11 +7,14 @@ import {
   ListItem,
   ListItemText,
 } from "@material-ui/core";
+import { autorun, reaction } from "mobx";
 import { observer } from "mobx-react-lite";
 import React, { useCallback, useEffect, useState } from "react";
+import ReactDOM from "react-dom";
 import { getTypeList } from "../api/layerReq";
-import { TypeProps } from "../api/types";
 import { hcEditor } from "../store/HcEditor";
+import { TypeProps } from "../types/Overlay";
+import Property from "./Property";
 export interface EditorProps {}
 
 const Editor: React.FC<EditorProps> = ({}) => {
@@ -27,14 +30,18 @@ const Editor: React.FC<EditorProps> = ({}) => {
   }, [fetchData]);
   const handleClick = (item: TypeProps) => {
     return () => {
-      console.log(hcEditor.Layer);
-      let icon = "";
-      debugger;
-      item.eleType === "billboard" &&
-        (icon = "http://am-img.gkiiot.com/editor/textures/暖色2.jpg");
-      hcEditor.draw(item.eleType, icon);
+      hcEditor.draw(item);
     };
   };
+
+  // reaction(()=>hcEditor.Open1,()=>{
+  //   if(hcEditor.Open1){
+  //     debugger
+  //     ReactDOM.render(<Property/>, document.getElementById('popup'))
+  //   }else{
+  //       console.log(2)
+  //   }
+  // })
   return (
     <Box
       bgcolor="#fff"

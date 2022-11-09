@@ -2,6 +2,8 @@ import { Box, Checkbox, FormControlLabel, FormGroup } from "@material-ui/core";
 import { observer } from "mobx-react-lite";
 import React, { useCallback, useEffect, useState } from "react";
 import { getTypeList } from "../api/layerReq";
+import { hcEditor } from "../store/HcEditor";
+import { TypeProps } from "../types/Overlay";
 export interface LayerManageProps {}
 
 const LayerManage: React.FC<LayerManageProps> = ({}) => {
@@ -10,8 +12,14 @@ const LayerManage: React.FC<LayerManageProps> = ({}) => {
     const param = {};
     let res = await getTypeList(param),
       resTypes = res.result;
+    createLayer(resTypes)
     setTypes([...types, ...resTypes]);
   }, []);
+  const createLayer = (resTypes: TypeProps[])=>{
+    resTypes.map((item: TypeProps)=>{
+      hcEditor.createLayer(item.type)
+    })
+  }
   useEffect(() => {
     fetchData();
   }, [fetchData]);
