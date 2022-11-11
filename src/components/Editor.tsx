@@ -6,8 +6,8 @@ import {
   List,
   ListItem,
   ListItemText,
-} from "@material-ui/core";
-import { autorun, reaction } from "mobx";
+} from "@mui/material";
+import { reaction } from "mobx";
 import { observer } from "mobx-react-lite";
 import React, { useCallback, useEffect, useState } from "react";
 import ReactDOM from "react-dom";
@@ -34,14 +34,14 @@ const Editor: React.FC<EditorProps> = ({}) => {
     };
   };
 
-  // reaction(()=>hcEditor.Open1,()=>{
-  //   if(hcEditor.Open1){
-  //     debugger
-  //     ReactDOM.render(<Property/>, document.getElementById('popup'))
-  //   }else{
-  //       console.log(2)
-  //   }
-  // })
+  reaction(()=>hcEditor.Open1,()=>{
+    if(hcEditor.Open1){
+      debugger
+      ReactDOM.render(<Property/>, document.getElementById('popup'))
+    }else{
+        console.log(2)
+    }
+  })
   return (
     <Box
       bgcolor="#fff"

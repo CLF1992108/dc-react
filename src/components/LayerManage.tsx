@@ -1,4 +1,4 @@
-import { Box, Checkbox, FormControlLabel, FormGroup } from "@material-ui/core";
+import { Box, Checkbox, FormControlLabel, FormGroup } from "@mui/material";
 import { observer } from "mobx-react-lite";
 import React, { useCallback, useEffect, useState } from "react";
 import { getTypeList } from "../api/layerReq";

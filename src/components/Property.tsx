@@ -1,9 +1,8 @@
-import { autorun, reaction } from "mobx";
 import React, { useEffect, useRef, useState } from "react"
 import { hcEditor } from "../store/HcEditor";
 import { PropertyPanel } from "@haichuang/components";
 import { observer } from "mobx-react-lite";
-import { Box } from "@material-ui/core";
+import { Box } from "@mui/material";
 export interface PropertyProps{}
  const Property: React.FC<PropertyProps> = ({}) => {
     const [options, setOptions] = useState(()=>{
@@ -18,7 +17,7 @@ export interface PropertyProps{}
           key: "HorAlign",
           name: "HorAlign",
           label: "水平对齐",
-          type: "Radio",
+          type: "Select",
           children: [
             {
               key: 0,
@@ -50,32 +49,9 @@ export interface PropertyProps{}
         allVal: any
       ) => {}
       return (
-        // <Box
-        //   sx={{
-        //     width: "100%",
-        //     maxWidth: 360,
-        //     bgcolor: "background.paper",
-        //     fontSize: "14px",
-        //   }}
-        //   component="nav"
-        //   aria-labelledby="nested-list-subheader"
-        // > aaaa
-        //   <PropertyPanel
-        //     sx={{
-        //       width: 280,
-        //       p: 0,
-        //       "& .css-1xx1wee-MuiFormLabel-root": { padding: "0 8px 0 0" },
-        //     }}
-        //     options={options}
-        //     models={models}
-        //     labelPosition="left"
-        //     labelWidth="95px"
-        //     onValuesChange={onValuesChange}
-        //   />
-        // </Box>
         <Box>
             
-            {/* <PropertyPanel
+            <PropertyPanel
             sx={{
               width: 280,
               p: 0,
@@ -84,9 +60,9 @@ export interface PropertyProps{}
             options={options}
             models={models}
             labelPosition="left"
-            labelWidth="95px"
+            labelWidth="70px"
             onValuesChange={onValuesChange}
-          /> */}
+          />
         </Box>
         )
 }

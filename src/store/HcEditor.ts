@@ -1,4 +1,3 @@
-import Title from "antd/lib/skeleton/Title";
 import { makeAutoObservable } from "mobx"
 import { getPropsListByType } from "../api/layerReq";
 import { LayerProps, OverlayProps } from "../types/DCProps";
