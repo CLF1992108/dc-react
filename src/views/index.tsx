@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import LayerManage from "../components/LayerManage";
 import { Viewer } from "../components/Viewer";
 import HcViewer from "../core/HCViewer";
 import { MapOptions } from "../core/type";
@@ -59,7 +58,6 @@ const App: React.FC<AppProps> = (AppProps) => {
   };
   return (
     <div className="home">
-      <LayerManage></LayerManage>
       <Viewer onViewerCreated={_onViewerCreated} />
     </div>
   );

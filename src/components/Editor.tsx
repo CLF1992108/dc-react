@@ -1,5 +1,6 @@
 import {
   Box,
+  Button,
   Checkbox,
   FormControlLabel,
   FormGroup,
@@ -7,18 +8,19 @@ import {
   ListItem,
   ListItemText,
 } from "@mui/material";
-import { reaction } from "mobx";
+import { autorun, reaction } from "mobx";
 import { observer } from "mobx-react-lite";
 import React, { useCallback, useEffect, useState } from "react";
 import ReactDOM from "react-dom";
-import { getTypeList } from "../api/layerReq";
+import { getPropsListByType, getTypeList } from "../api/layerReq";
 import { hcEditor } from "../store/HcEditor";
 import { TypeProps } from "../types/Overlay";
-import Property from "./Property";
+import Property, { PropsOption } from "./Property";
 export interface EditorProps {}
-
 const Editor: React.FC<EditorProps> = ({}) => {
   const [types, setTypes] = useState([]);
+  const [options, setOptions]: any[] = useState([]);
+  const [models, setModels] = useState({});
   const fetchData = useCallback(async () => {
     const param = {};
     let res = await getTypeList(param),
@@ -33,34 +35,77 @@ const Editor: React.FC<EditorProps> = ({}) => {
       hcEditor.draw(item);
     };
   };
-
-  reaction(()=>hcEditor.Open1,()=>{
-    if(hcEditor.Open1){
-      debugger
-      ReactDOM.render(<Property/>, document.getElementById('popup'))
-    }else{
-        console.log(2)
+  const onConfirm = (mods: Record<string, unknown>) => {
+    console.log("onConfirm");
+    // hcEditor.Open = false;
+    setModels(mods);
+    console.log(models);
+  };
+  const onCancel = () => {
+    hcEditor.Open = false;
+    console.log("onCancel");
+  };
+  const onDelete = () => {
+    hcEditor.Open = false;
+    console.log("onDelete");
+  };
+  const init = async () => {
+    debugger;
+    if (!hcEditor.CurrentOverlay) {
+      return;
     }
-  })
+    const params = { type: hcEditor.CurrentOverlay.type };
+    const res = await getPropsListByType(params);
+    setOptions(res.result);
+  };
+  useEffect(() => {
+    reaction(
+      () => hcEditor.Open,
+      async () => {
+        if (hcEditor.Open) {
+          const container = document.getElementById("popup");
+          debugger;
+          ReactDOM.render(
+            <Property
+              init={init}
+              footerShow={true}
+              options={options}
+              models={models}
+              onConfirm={onConfirm}
+              onCancel={onCancel}
+              onDelete={onDelete}
+            />,
+            container
+          );
+        } else {
+          hcEditor.popupHide();
+        }
+      }
+    );
+  }, []);
+
   return (
     <Box
-      bgcolor="#fff"
       sx={{
-        position: "absolute",
-        right: "50px",
-        top: "50px",
-        zIndex: 1,
-        color: "#000",
-        borderRadius: "10px",
+        width: "120px",
+        maxHeight: "500px",
+        overflow: "auto",
       }}
     >
-      <List component="nav" aria-label="secondary mailbox folders">
-        {types.map((item) => (
-          <ListItem button onClick={handleClick(item)} key={item.id}>
-            <ListItemText primary={item.name} />
-          </ListItem>
-        ))}
-      </List>
+      <FormGroup>
+        <List component="nav" aria-label="secondary mailbox folders">
+          {types.map((item) => (
+            <ListItem
+              button
+              onClick={handleClick(item)}
+              key={item.id}
+              sx={{ pt: 0, m: 0 }}
+            >
+              <ListItemText primary={item.name} />
+            </ListItem>
+          ))}
+        </List>
+      </FormGroup>
     </Box>
   );
 };

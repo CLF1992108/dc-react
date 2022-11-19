@@ -1,7 +1,9 @@
+import { TypeProps } from "../types/Overlay";
+
 export class Widget {
-  title: string;
+  name: string;
   icon: string;
-  json: Record<string, string> = {}
+  json: Record<string, unknown> = {}
   position: [];
   constructor() { }
   render() {
@@ -9,6 +11,11 @@ export class Widget {
   }
   render2d() { }
   render3d() { }
+  add(overlay: any, layer: any) { }
+  update() { }
+  delete() { }
+  setOverlayAttr(overlay: any, parm: TypeProps) { }
+
 }
 class Widget2 extends Widget {
   points: []

@@ -23,7 +23,7 @@ module.exports = (env, argv) => {
     devServer: {
       progress: true, // 命令行中会显示打包的进度
       liveReload: true,
-      port: 9000,
+      port: 5112,
       filename: 'tsc_out.js',
       writeToDisk: (filename) => {
         return /tsc_out.js/.test(filename)

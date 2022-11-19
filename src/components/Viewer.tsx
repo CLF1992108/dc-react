@@ -1,11 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { hcEditor } from "../store/HcEditor";
 import Editor from "./Editor";
-import Property from "./Property";
+import { TabsContainer } from "@haichuang/components";
+import LayerManage from "./LayerManage";
+import { Box } from "@mui/material";
 export interface ViewerProps {
   onViewerCreated: (viewer: any) => void;
 }
+const tabs = [
+  { title: "图层管理", value: 0, component: <LayerManage /> },
+  { title: "编辑元素", value: 1, component: <Editor /> },
+];
+
 export const Viewer: React.FC<ViewerProps> = ({ onViewerCreated }) => {
+  const [value, setValue] = React.useState(0);
   useEffect(() => {
     DC.ready(() => {
       const viewer = new DC.Viewer("viewer-container");
@@ -13,11 +21,26 @@ export const Viewer: React.FC<ViewerProps> = ({ onViewerCreated }) => {
       hcEditor.init(viewer);
     });
   }, [onViewerCreated]);
-  
+  const handleChange = (v: number) => {
+    setValue(v);
+  };
   return (
     <div className="viewer-container" id="viewer-container">
-      <Editor></Editor>
+      <Box
+        bgcolor="#fff"
+        sx={{
+          position: "absolute",
+          zIndex: 1,
+          color: "#000",
+        }}
+      >
+        <TabsContainer
+          isRow={true}
+          tabs={tabs}
+          value={value}
+          onChange={handleChange}
+        />
+      </Box>
     </div>
   );
 };
-
