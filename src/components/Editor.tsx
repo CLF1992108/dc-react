@@ -13,6 +13,7 @@ import { observer } from "mobx-react-lite";
 import React, { useCallback, useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 import { getPropsListByType, getTypeList } from "../api/layerReq";
+import { hcOverlay } from "../core/Overlay";
 import { hcEditor } from "../store/HcEditor";
 import { TypeProps } from "../types/Overlay";
 import Property, { PropsOption } from "./Property";
@@ -36,27 +37,18 @@ const Editor: React.FC<EditorProps> = ({}) => {
     };
   };
   const onConfirm = (mods: Record<string, unknown>) => {
-    console.log("onConfirm");
     // hcEditor.Open = false;
     setModels(mods);
-    console.log(models);
+    hcEditor.CurrentOverlay.attr.property = mods;
+    hcOverlay.update(hcEditor.CurrentOverlay.attr);
+    hcEditor.Open = false;
   };
   const onCancel = () => {
     hcEditor.Open = false;
-    console.log("onCancel");
   };
   const onDelete = () => {
+    hcOverlay.delete(hcEditor.CurrentOverlay);
     hcEditor.Open = false;
-    console.log("onDelete");
-  };
-  const init = async () => {
-    debugger;
-    if (!hcEditor.CurrentOverlay) {
-      return;
-    }
-    const params = { type: hcEditor.CurrentOverlay.type };
-    const res = await getPropsListByType(params);
-    setOptions(res.result);
   };
   useEffect(() => {
     reaction(
@@ -64,10 +56,8 @@ const Editor: React.FC<EditorProps> = ({}) => {
       async () => {
         if (hcEditor.Open) {
           const container = document.getElementById("popup");
-          debugger;
           ReactDOM.render(
             <Property
-              init={init}
               footerShow={true}
               options={options}
               models={models}

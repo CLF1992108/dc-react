@@ -1,14 +1,23 @@
 import { Box, Checkbox, FormControlLabel, FormGroup } from "@mui/material";
 import { observer } from "mobx-react-lite";
 import React, { useCallback, useEffect, useState } from "react";
-import { getOverlaysByLayerId, getTypeList } from "../api/layerReq";
+import {
+  getOverlaysByLayerId,
+  getPropsListByType,
+  getTypeList,
+} from "../api/layerReq";
 import { hcEditor } from "../store/HcEditor";
 import { TypeProps } from "../types/Overlay";
 import { hcOverlay } from "../core/Overlay";
+import { reaction } from "mobx";
+import ReactDOM from "react-dom";
+import Property from "./Property";
 export interface LayerManageProps {}
 
 const LayerManage: React.FC<LayerManageProps> = ({}) => {
   const [types, setTypes] = useState([]);
+  const [options, setOptions]: any[] = useState([]);
+  const [models, setModels] = useState({});
   const fetchData = useCallback(async () => {
     const param = {};
     let res = await getTypeList(param),
@@ -20,35 +29,37 @@ const LayerManage: React.FC<LayerManageProps> = ({}) => {
     let params = {
       type: layer.attr.type,
     };
-    let res = await getOverlaysByLayerId(params),
-      overlay: any;
-
-    res.forEach((element) => {
+    let res = await getOverlaysByLayerId(params);
+    res.forEach((element: any) => {
+      let overlay: any;
       if (element.eleType === "billboard") {
         let position = new DC.Position(
-          element.position[0],
-          element.position[1]
+          element.position["lng"],
+          element.position["lat"]
         );
         overlay = new DC.Billboard(position, layer.attr.icon);
       } else if (element.eleType === "polyline") {
-        overlay = new DC.Polyline(element.points);
-
-        console.log(layer.attr.color);
+        overlay = new DC.Polyline(element.positions);
         overlay.setStyle({
           width: layer.attr.width,
           material: new Cesium.Color.fromCssColorString(layer.attr.color), //颜色
         });
       } else if (element.eleType === "polygon") {
-        overlay = new DC.Polygon("120,20;120,30;122,30");
+        overlay = new DC.Polygon(element.positions);
+        overlay.setStyle({
+          material: new Cesium.Color.fromCssColorString(layer.attr.color), //颜色
+        });
       }
-      hcOverlay.setOverlayAttr(overlay, layer.attr);
+      overlay.attr = element;
       layer.addOverlay(overlay);
       overlay.on(DC.MouseEventType.CLICK, () => {
         hcEditor.Plot.edit(overlay, () => {
-          hcEditor.editorComplete(overlay);
+          hcOverlay.update(overlay);
         });
       });
       overlay.on(DC.MouseEventType.RIGHT_CLICK, (e: any) => {
+        hcEditor.CurrentOverlay = overlay;
+        hcEditor.Open = false;
         hcEditor.diolog(e, overlay);
       });
     });
@@ -70,14 +81,36 @@ const LayerManage: React.FC<LayerManageProps> = ({}) => {
       types.forEach((ele) => {
         if (ele.id === id) {
           ele.checked = !ele.checked;
-
-          console.log(hcEditor.getLayer(ele.type));
           hcEditor.getLayer(ele.type).show = ele.checked;
         }
       });
       setTypes([...types]);
     };
   };
+  const onCancel = () => {
+    hcEditor.Open = false;
+  };
+  useEffect(() => {
+    reaction(
+      () => hcEditor.Open,
+      async () => {
+        if (hcEditor.Open) {
+          const container = document.getElementById("popup");
+          ReactDOM.render(
+            <Property
+              footerShow={false}
+              options={options}
+              models={models}
+              onCancel={onCancel}
+            />,
+            container
+          );
+        } else {
+          hcEditor.popupHide();
+        }
+      }
+    );
+  }, []);
   return (
     <Box
       sx={{

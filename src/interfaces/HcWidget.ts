@@ -1,6 +1,6 @@
 import { TypeProps } from "../types/Overlay";
 
-export class Widget {
+export class HcWidget {
   name: string;
   icon: string;
   json: Record<string, unknown> = {}
@@ -11,12 +11,12 @@ export class Widget {
   }
   render2d() { }
   render3d() { }
-  add(overlay: any, layer: any) { }
-  update() { }
-  delete() { }
+  add(overlay: any, layer: any, parm: TypeProps) { }
+  update(params: Record<string, unknown>) { }
+  delete(overlay: any) { }
   setOverlayAttr(overlay: any, parm: TypeProps) { }
 
 }
-class Widget2 extends Widget {
-  points: []
+class Widget2 extends HcWidget {
+  positions: []
 }

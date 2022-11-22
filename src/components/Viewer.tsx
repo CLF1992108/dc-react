@@ -22,6 +22,8 @@ export const Viewer: React.FC<ViewerProps> = ({ onViewerCreated }) => {
     });
   }, [onViewerCreated]);
   const handleChange = (v: number) => {
+    hcEditor.Open = false;
+    hcEditor.CurrentModule = v;
     setValue(v);
   };
   return (

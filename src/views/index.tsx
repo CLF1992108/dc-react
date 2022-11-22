@@ -55,6 +55,15 @@ const App: React.FC<AppProps> = (AppProps) => {
     let viewerApi = new HcViewer(viewer);
     viewerApi.addBaseLayer(baseLayers);
     global.viewerApi = viewerApi;
+    let globeRotate = new DC.GlobeRotate(viewer, {
+      duration: 1,
+      callback: () => {
+        viewer.flyToPosition(
+          new DC.Position(120.38105869, 31.10115627, 1e5, 0, -90)
+        );
+      },
+    });
+    globeRotate.start();
   };
   return (
     <div className="home">

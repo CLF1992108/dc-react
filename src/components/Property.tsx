@@ -64,10 +64,9 @@ interface PropertyPanelProps {
 
 export interface GisPropertyPanelProps extends PropertyPanelProps {
   footerShow: boolean;
-  onConfirm: (models: Record<string, unknown>) => void;
-  onCancel: () => void;
-  onDelete: () => void;
-  init: () => void;
+  onConfirm?: (models: Record<string, unknown>) => void;
+  onCancel?: () => void;
+  onDelete?: () => void;
 }
 const Property: React.FC<GisPropertyPanelProps> = ({
   footerShow,
@@ -76,7 +75,6 @@ const Property: React.FC<GisPropertyPanelProps> = ({
   onConfirm,
   onCancel,
   onDelete,
-  init,
 }) => {
   const [title, setTitle] = useState("");
   const [opts, setOpts] = useState([]);
@@ -115,6 +113,16 @@ const Property: React.FC<GisPropertyPanelProps> = ({
           </Grid>
         </Grid>
       );
+    } else {
+      return (
+        <Grid container spacing={5} sx={{ pl: 1.5 }}>
+          <Grid item>
+            <Button variant="contained" color="inherit" onClick={onCancel}>
+              关闭
+            </Button>
+          </Grid>
+        </Grid>
+      );
     }
   };
   const header = () => {
@@ -123,7 +131,18 @@ const Property: React.FC<GisPropertyPanelProps> = ({
   let setPanelCallback = useCallback(async () => {
     const params = { type: hcEditor.CurrentOverlay?.type };
     const res = await getPropsListByType(params);
-    setOpts(res.result);
+    let temps;
+    temps = res.result.map((ele) => {
+      if (hcEditor.CurrentModule === 0) {
+        ele.disabled = true;
+      } else {
+        ele.disabled = false;
+      }
+      return ele;
+    });
+    setOpts(temps);
+    console.log(hcEditor, hcEditor.CurrentOverlay.attr.property);
+    setMods(hcEditor.CurrentOverlay.attr.property);
     setTitle(hcEditor.CurrentOverlay?.attr.name);
   }, []);
   useEffect(() => {
