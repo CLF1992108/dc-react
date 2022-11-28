@@ -102,30 +102,30 @@ export async function getPropsListByType(params: { type: String }) {
           "name": "FC3",
           disabled: false
         },
-        // {
-        //   key: 'FC2',
-        //   name: 'FC2',
-        //   label: '客户类型',
-        //   type: 'List',
-        //   children: [
-        //     {
-        //       key: 1,
-        //       value: 1,
-        //       label: '商业用户',
-        //     },
-        //     {
-        //       key: 2,
-        //       value: 2,
-        //       label: '工业用户',
-        //     },
-        //     {
-        //       key: 3,
-        //       value: 3,
-        //       label: '居民用户',
-        //     },
-        //   ],
-        //   disabled: false
-        // },
+        {
+          key: 'FC2',
+          name: 'FC2',
+          label: '客户类型',
+          type: 'List',
+          children: [
+            {
+              key: 1,
+              value: 1,
+              label: '商业用户',
+            },
+            {
+              key: 2,
+              value: 2,
+              label: '工业用户',
+            },
+            {
+              key: 3,
+              value: 3,
+              label: '居民用户',
+            },
+          ],
+          disabled: false
+        },
         // {
         //   "key": "FC3",
         //   "type": "String",
@@ -311,7 +311,7 @@ export async function addOverlay(params: any) {
 
   let overlays = window.localStorage.getItem(params.type)
   let objs
-  objs = JSON.parse(overlays)
+  objs = overlays !== null && JSON.parse(overlays)
   params.id = DC.Util.uuid()
   objs.push(params)
   var reg2 = new RegExp("_", "g"); // 不加'g'，仅删除字符串里第一个"a"
@@ -320,15 +320,15 @@ export async function addOverlay(params: any) {
   return params.id
 }
 export async function updateOverlay(params: Record<string, unknown>) {
-  let overlays = window.localStorage.getItem(params.type as string)
+  let overlays = window.localStorage.getItem(params['type'] as string)
   let objs
-  objs = JSON.parse(overlays)
+  objs = overlays !== null && JSON.parse(overlays)
   objs.forEach((element: { id: unknown; property: Record<string, unknown> }) => {
-    if (element.id === params.id) {
-      element.property = params.property as Record<string, unknown>
+    if (element.id === params['id']) {
+      element.property = params['property'] as Record<string, unknown>
     }
   });
-  window.localStorage.setItem(params.type as string, JSON.stringify(objs));
+  window.localStorage.setItem(params['type'] as string, JSON.stringify(objs));
 }
 export async function deleteOverlay(params: any) { }
 

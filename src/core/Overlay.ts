@@ -1,10 +1,11 @@
 import { Billboard, Overlay, Polygon, Polyline } from "dc";
+import { override } from "mobx";
 import { addOverlay, deleteOverlay, updateOverlay } from "../api/layerReq";
 import { HcWidget } from "../interfaces";
 import { hcEditor } from "../store/HcEditor";
 import { TypeProps } from "../types/Overlay";
 class HcOverlay extends HcWidget {
-  async add(overlay: any, layer: any, parm: TypeProps) {
+  override async add(overlay: any, layer: any, parm: TypeProps) {
     let plot = hcEditor.Plot
     this.setOverlayAttr(overlay, parm)
     let id = await addOverlay(overlay.attr)
@@ -30,18 +31,17 @@ class HcOverlay extends HcWidget {
     })
     return overlay
   }
-  update(params: Record<string, unknown>) {
-    debugger
+  override update(params: Record<string, unknown>) {
     updateOverlay(params)
     return true
   }
-  delete(overlay: any) {
+  override delete(overlay: any) {
     const layer = hcEditor.getLayer(overlay.attr.type)
     layer.removeOverlay(overlay)
     deleteOverlay({})
 
   }
-  setOverlayAttr(overlay: any, parm: TypeProps) {
+  override setOverlayAttr(overlay: any, parm: TypeProps) {
     overlay.attr = {
       type: parm.type,
       name: parm.name,

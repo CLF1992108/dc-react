@@ -56,7 +56,7 @@ const App: React.FC<AppProps> = (AppProps) => {
     viewerApi.addBaseLayer(baseLayers);
     global.viewerApi = viewerApi;
     let globeRotate = new DC.GlobeRotate(viewer, {
-      duration: 1,
+      duration: 0.001,
       callback: () => {
         viewer.flyToPosition(
           new DC.Position(120.38105869, 31.10115627, 1e5, 0, -90)

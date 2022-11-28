@@ -1,26 +1,17 @@
-import {
-  Box,
-  Button,
-  Checkbox,
-  FormControlLabel,
-  FormGroup,
-  List,
-  ListItem,
-  ListItemText,
-} from "@mui/material";
-import { autorun, reaction } from "mobx";
+import { Box, FormGroup, List, ListItem, ListItemText } from "@mui/material";
+import { reaction } from "mobx";
 import { observer } from "mobx-react-lite";
 import React, { useCallback, useEffect, useState } from "react";
-import ReactDOM from "react-dom";
-import { getPropsListByType, getTypeList } from "../api/layerReq";
+import { createRoot, Root } from "react-dom/client";
+import { getTypeList } from "../api/layerReq";
 import { hcOverlay } from "../core/Overlay";
 import { hcEditor } from "../store/HcEditor";
 import { TypeProps } from "../types/Overlay";
 import Property, { PropsOption } from "./Property";
 export interface EditorProps {}
 const Editor: React.FC<EditorProps> = ({}) => {
-  const [types, setTypes] = useState([]);
-  const [options, setOptions]: any[] = useState([]);
+  const [types, setTypes] = useState<TypeProps[]>([]);
+  const [options, setOptions] = useState<PropsOption[]>([]);
   const [models, setModels] = useState({});
   const fetchData = useCallback(async () => {
     const param = {};
@@ -37,7 +28,6 @@ const Editor: React.FC<EditorProps> = ({}) => {
     };
   };
   const onConfirm = (mods: Record<string, unknown>) => {
-    // hcEditor.Open = false;
     setModels(mods);
     hcEditor.CurrentOverlay.attr.property = mods;
     hcOverlay.update(hcEditor.CurrentOverlay.attr);
@@ -51,27 +41,34 @@ const Editor: React.FC<EditorProps> = ({}) => {
     hcEditor.Open = false;
   };
   useEffect(() => {
-    reaction(
+    let root: Root;
+    let dispose = reaction(
       () => hcEditor.Open,
       async () => {
         if (hcEditor.Open) {
           const container = document.getElementById("popup");
-          ReactDOM.render(
-            <Property
-              footerShow={true}
-              options={options}
-              models={models}
-              onConfirm={onConfirm}
-              onCancel={onCancel}
-              onDelete={onDelete}
-            />,
-            container
-          );
+          if (container) {
+            root = createRoot(container);
+            root.render(
+              <Property
+                footerShow={true}
+                options={options}
+                models={models}
+                onCancel={onCancel}
+                onConfirm={onConfirm}
+                onDelete={onDelete}
+              />
+            );
+          }
         } else {
+          root.unmount();
           hcEditor.popupHide();
         }
       }
     );
+    return () => {
+      dispose();
+    };
   }, []);
 
   return (

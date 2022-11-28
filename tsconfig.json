@@ -1,7 +1,13 @@
 {
   "compilerOptions": {
-    "outDir": "./dist/",
+    "strict": true,
     "noImplicitAny": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noFallthroughCasesInSwitch": true,
+    "outDir": "./dist/",
     "module": "es6",
     "target": "es5",
     "jsx": "react",

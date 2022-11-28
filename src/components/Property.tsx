@@ -131,7 +131,7 @@ const Property: React.FC<GisPropertyPanelProps> = ({
   let setPanelCallback = useCallback(async () => {
     const params = { type: hcEditor.CurrentOverlay?.type };
     const res = await getPropsListByType(params);
-    let temps;
+    let temps: PropsOption[];
     temps = res.result.map((ele) => {
       if (hcEditor.CurrentModule === 0) {
         ele.disabled = true;
@@ -145,9 +145,10 @@ const Property: React.FC<GisPropertyPanelProps> = ({
     setMods(hcEditor.CurrentOverlay.attr.property);
     setTitle(hcEditor.CurrentOverlay?.attr.name);
   }, []);
+
   useEffect(() => {
     setPanelCallback();
-    reaction(
+    let dispose = reaction(
       () => hcEditor.Open,
       () => {
         if (hcEditor.Open) {
@@ -155,6 +156,9 @@ const Property: React.FC<GisPropertyPanelProps> = ({
         }
       }
     );
+    return () => {
+      dispose();
+    };
   }, []);
   return (
     <Box>

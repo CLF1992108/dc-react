@@ -45,11 +45,7 @@ export class HcEditor {
     return this.currentOverlay
   }
   init(viewer: Viewer) {
-
-    const content = `<div id="popup"><div>`
     this.viewer = viewer
-    let popup = this.viewer.popup
-    popup.setContent(content)
     this.open = false
     this.layerGroup = new DC.LayerGroup('layerGroup')
     viewer.addLayerGroup(this.layerGroup)
@@ -67,12 +63,13 @@ export class HcEditor {
   }
   diolog(e: any, overlay: any) {
     this.open = true
-
+    const content = `<div id="popup"><div>`
+    let popup = this.viewer.popup
+    popup.setContent(content)
     this.viewer.popup.setPosition(e.surfacePosition)
-    console.log(e)
   }
   popupHide() {
-    this.viewer?.popup.hide()
+    this.viewer.popup.hide()
   }
   draw(parm: TypeProps) {
     let plot = this.plot
@@ -81,8 +78,7 @@ export class HcEditor {
         let layer = this.layerGroup.getLayer(parm.type)
         hcOverlay.add(overlay, layer, parm)
       }
-    }
-    )
+    })
   }
 }
 export const hcEditor = new HcEditor()

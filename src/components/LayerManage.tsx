@@ -10,13 +10,13 @@ import { hcEditor } from "../store/HcEditor";
 import { TypeProps } from "../types/Overlay";
 import { hcOverlay } from "../core/Overlay";
 import { reaction } from "mobx";
-import ReactDOM from "react-dom";
-import Property from "./Property";
+import Property, { PropsOption } from "./Property";
+import { createRoot } from "react-dom/client";
 export interface LayerManageProps {}
 
 const LayerManage: React.FC<LayerManageProps> = ({}) => {
-  const [types, setTypes] = useState([]);
-  const [options, setOptions]: any[] = useState([]);
+  const [types, setTypes] = useState<TypeProps[]>([]);
+  const [options, setOptions] = useState<PropsOption[]>([]);
   const [models, setModels] = useState({});
   const fetchData = useCallback(async () => {
     const param = {};
@@ -91,25 +91,30 @@ const LayerManage: React.FC<LayerManageProps> = ({}) => {
     hcEditor.Open = false;
   };
   useEffect(() => {
-    reaction(
+    let root: any;
+    let dispose = reaction(
       () => hcEditor.Open,
       async () => {
         if (hcEditor.Open) {
           const container = document.getElementById("popup");
-          ReactDOM.render(
+          root = createRoot(container);
+          root.render(
             <Property
               footerShow={false}
               options={options}
               models={models}
               onCancel={onCancel}
-            />,
-            container
+            />
           );
         } else {
+          root.unmount();
           hcEditor.popupHide();
         }
       }
     );
+    return () => {
+      dispose();
+    };
   }, []);
   return (
     <Box
