@@ -7,7 +7,6 @@ import React, {
 } from "react";
 import { PropertyPanel } from "@haichuang/components";
 import { Box, Button, Divider, Grid, makeStyles, SxProps } from "@mui/material";
-import { IntegrationInstructions } from "@mui/icons-material";
 import { reaction } from "mobx";
 import { hcEditor } from "../store/HcEditor";
 import { getPropsListByType } from "../api/layerReq";
@@ -77,7 +76,7 @@ const Property: React.FC<GisPropertyPanelProps> = ({
   onDelete,
 }) => {
   const [title, setTitle] = useState("");
-  const [opts, setOpts] = useState([]);
+  const [opts, setOpts] = useState<PropsOption[]>([]);
   const [mods, setMods] = useState(models);
   const onValuesChange = (
     changeVal: Record<string, unknown>,
@@ -86,7 +85,7 @@ const Property: React.FC<GisPropertyPanelProps> = ({
     setMods(allVal);
   };
   const onConfirmClick = () => {
-    onConfirm(mods);
+    onConfirm?.(mods);
   };
   const footer = () => {
     if (footerShow) {
@@ -130,9 +129,10 @@ const Property: React.FC<GisPropertyPanelProps> = ({
   };
   let setPanelCallback = useCallback(async () => {
     const params = { type: hcEditor.CurrentOverlay?.type };
-    const res = await getPropsListByType(params);
-    let temps: PropsOption[];
-    temps = res.result.map((ele) => {
+    let propsListByType = await getPropsListByType(params);
+    const res: PropsOption[] = propsListByType.result;
+    let temps: PropsOption[] = [];
+    temps = res.map((ele: PropsOption) => {
       if (hcEditor.CurrentModule === 0) {
         ele.disabled = true;
       } else {

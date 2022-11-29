@@ -1,10 +1,10 @@
 import { TypeProps } from "../types/Overlay";
 
 export class HcWidget {
-  name: string;
-  icon: string;
+  name: string = "";
+  icon: string = "";
   json: Record<string, unknown> = {}
-  position: [];
+  position: [] = [];
   constructor() { }
   render() {
     //json -panel
@@ -17,6 +17,4 @@ export class HcWidget {
   setOverlayAttr(overlay: any, parm: TypeProps) { }
 
 }
-class Widget2 extends HcWidget {
-  positions: []
-}
+

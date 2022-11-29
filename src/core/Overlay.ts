@@ -1,5 +1,4 @@
 import { Billboard, Overlay, Polygon, Polyline } from "dc";
-import { override } from "mobx";
 import { addOverlay, deleteOverlay, updateOverlay } from "../api/layerReq";
 import { HcWidget } from "../interfaces";
 import { hcEditor } from "../store/HcEditor";

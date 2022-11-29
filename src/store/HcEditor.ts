@@ -1,21 +1,17 @@
-import { Layer, LayerGroup, Overlay, Plot, Viewer } from "dc";
+import { LayerGroup as DCLayerGroup, Overlay as DCOverlay, Plot, Viewer as DCViewer } from "dc";
 import { makeAutoObservable } from "mobx"
-import { getPropsListByType } from "../api/layerReq";
 import { hcOverlay } from "../core/Overlay";
-import { LayerProps } from "../types/DCProps";
 import { TypeProps } from "../types/Overlay";
 export class HcEditor {
-  private viewer: Viewer
-  private layerGroup: LayerGroup
-  private plot: Plot
-  private layer: Layer
+  private viewer!: DCViewer;
+  private layerGroup!: DCLayerGroup;
+  private plot!: Plot;
   private open = false
   private currentOverlay: any;
   private currentModule = 0
 
   constructor() {
     makeAutoObservable(this)
-
   }
   get CurrentModule() {
     return this.currentModule
@@ -44,7 +40,7 @@ export class HcEditor {
   get CurrentOverlay() {
     return this.currentOverlay
   }
-  init(viewer: Viewer) {
+  init(viewer: DCViewer) {
     this.viewer = viewer
     this.open = false
     this.layerGroup = new DC.LayerGroup('layerGroup')
@@ -73,7 +69,7 @@ export class HcEditor {
   }
   draw(parm: TypeProps) {
     let plot = this.plot
-    plot && plot.draw(parm.eleType, (overlay: Overlay) => {
+    plot && plot.draw(parm.eleType, (overlay: DCOverlay) => {
       if (overlay) {
         let layer = this.layerGroup.getLayer(parm.type)
         hcOverlay.add(overlay, layer, parm)

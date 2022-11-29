@@ -4,6 +4,8 @@ import Editor from "./Editor";
 import { TabsContainer } from "@haichuang/components";
 import LayerManage from "./LayerManage";
 import { Box } from "@mui/material";
+import { Update } from "./common/Upload";
+import { DraggableDialog } from "./common/DraggableDialog";
 export interface ViewerProps {
   onViewerCreated: (viewer: any) => void;
 }
@@ -14,6 +16,7 @@ const tabs = [
 
 export const Viewer: React.FC<ViewerProps> = ({ onViewerCreated }) => {
   const [value, setValue] = React.useState(0);
+  const [open, setOpen] = React.useState(false);
   useEffect(() => {
     DC.ready(() => {
       const viewer = new DC.Viewer("viewer-container");
@@ -21,10 +24,12 @@ export const Viewer: React.FC<ViewerProps> = ({ onViewerCreated }) => {
       hcEditor.init(viewer);
     });
   }, [onViewerCreated]);
-  const handleChange = (v: number) => {
+  const handleChange = (v: string | number) => {
+    let val = typeof v === "number" ? v : Number(v);
     hcEditor.Open = false;
-    hcEditor.CurrentModule = v;
-    setValue(v);
+    hcEditor.CurrentModule = val;
+    setValue(val);
+    setOpen(!open);
   };
   return (
     <div className="viewer-container" id="viewer-container">
@@ -42,6 +47,18 @@ export const Viewer: React.FC<ViewerProps> = ({ onViewerCreated }) => {
           value={value}
           onChange={handleChange}
         />
+        <DraggableDialog
+          open={open}
+          close={() => {
+            setOpen(false);
+          }}
+          confirm={() => {
+            setOpen(false);
+          }}
+          title="上传"
+        >
+          <Update></Update>
+        </DraggableDialog>
       </Box>
     </div>
   );

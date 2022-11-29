@@ -1,11 +1,7 @@
 import { Box, Checkbox, FormControlLabel, FormGroup } from "@mui/material";
 import { observer } from "mobx-react-lite";
 import React, { useCallback, useEffect, useState } from "react";
-import {
-  getOverlaysByLayerId,
-  getPropsListByType,
-  getTypeList,
-} from "../api/layerReq";
+import { getOverlaysByLayerId, getTypeList } from "../api/layerReq";
 import { hcEditor } from "../store/HcEditor";
 import { TypeProps } from "../types/Overlay";
 import { hcOverlay } from "../core/Overlay";
@@ -71,6 +67,37 @@ const LayerManage: React.FC<LayerManageProps> = ({}) => {
       hcEditor.getLayer(item.type).show = item.checked;
 
       getOverlays(layer);
+
+      // let geojsonLayer = new DC.GeoJsonLayer(
+      //   "id",
+      //   "../../public/config/data.json"
+      // );
+      // geojsonLayer.eachOverlay((item: any) => {
+      //   // item 为一个entity,
+      //   if (item.polyline) {
+      //     //todo
+      //     debugger;
+      //     let polyline = DC.Polyline.fromEntity(item);
+      //     layer.addOverlay(polyline);
+      //   }
+      //   if (item.polygon) {
+      //     //todo
+      //     let polygon = DC.Polygon.fromEntity(item);
+      //     layer.addOverlay(polygon);
+      //   }
+      //   if (item.billboard) {
+      //     //todo
+      //     let point = DC.Point.fromEntity(item);
+      //     let divIcon = DC.DivIcon.fromEntity(item);
+      //     let billboard = DC.Billboard.fromEntity(item);
+      //     layer.addOverlay(point);
+      //     // layer.addOverlay(divIcon);
+      //     layer.addOverlay(billboard);
+      //     let layerDom = new DC.HtmlLayer("dom");
+      //     layerDom.addOverlay(divIcon);
+      //     hcEditor.getView
+      //   }
+      // });
     });
   };
   useEffect(() => {
@@ -97,7 +124,7 @@ const LayerManage: React.FC<LayerManageProps> = ({}) => {
       async () => {
         if (hcEditor.Open) {
           const container = document.getElementById("popup");
-          root = createRoot(container);
+          root = container && createRoot(container);
           root.render(
             <Property
               footerShow={false}

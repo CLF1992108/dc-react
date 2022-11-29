@@ -1,8 +1,9 @@
+import { Viewer as DCViewer } from "dc"
 import { MapOptions } from "./type"
 
 class HcViewer {
   private viewer
-  constructor(viewer: any) {
+  constructor(viewer: DCViewer) {
     this.viewer = viewer
   }
   set Viewer(v) {
