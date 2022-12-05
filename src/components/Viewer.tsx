@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useCallback } from "react";
 import { hcEditor } from "../store/HcEditor";
 import Editor from "./Editor";
 import { TabsContainer } from "@haichuang/components";
@@ -23,7 +23,7 @@ export const Viewer: React.FC<ViewerProps> = ({ onViewerCreated }) => {
       onViewerCreated(viewer);
       hcEditor.init(viewer);
     });
-  }, [onViewerCreated]);
+  }, []);
   const handleChange = (v: string | number) => {
     let val = typeof v === "number" ? v : Number(v);
     hcEditor.Open = false;
@@ -31,6 +31,10 @@ export const Viewer: React.FC<ViewerProps> = ({ onViewerCreated }) => {
     setValue(val);
     setOpen(!open);
   };
+  const onDrop = useCallback((acceptedFiles: any) => {
+    // Do something with the files
+    debugger;
+  }, []);
   return (
     <div className="viewer-container" id="viewer-container">
       <Box
@@ -57,7 +61,7 @@ export const Viewer: React.FC<ViewerProps> = ({ onViewerCreated }) => {
           }}
           title="上传"
         >
-          <Update></Update>
+          <Update onDrop={onDrop}></Update>
         </DraggableDialog>
       </Box>
     </div>

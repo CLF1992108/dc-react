@@ -1,11 +1,16 @@
+import { Box, Toolbar } from "@mui/material";
 import React, { useEffect, useState } from "react";
+import { HDrawer } from "../components/common/HDrawer";
+import ResponsiveAppBar from "../components/ResponsiveAppBar";
 import { Viewer } from "../components/Viewer";
 import HcViewer from "../core/HCViewer";
 import { MapOptions } from "../core/type";
-
+import { modules } from "./viewConfig";
 export interface AppProps {}
 
 const App: React.FC<AppProps> = (AppProps) => {
+  const [open, setOpen] = useState(true);
+  const [module, setModule] = useState(0);
   const _onViewerCreated = (viewer: any) => {
     const aMapImgOptions: MapOptions = {
       iconUrl: "https://dc.dvgis.cn/examples/images/icon/img.png",
@@ -66,9 +71,34 @@ const App: React.FC<AppProps> = (AppProps) => {
     globeRotate.start();
   };
   return (
-    <div className="home">
-      <Viewer onViewerCreated={_onViewerCreated} />
-    </div>
+    <>
+      <ResponsiveAppBar
+        onClick={(e: number) => {
+          setOpen(true);
+          setModule(e);
+        }}
+      ></ResponsiveAppBar>
+      <HDrawer
+        title={modules[module].title}
+        open={open}
+        anchor="left"
+        onClose={() => {
+          setOpen(false);
+        }}
+      >
+        <Box
+          sx={{
+            color: "#fff",
+          }}
+        >
+          {modules[module].component}
+        </Box>
+      </HDrawer>
+
+      <div className="home" style={{ height: "calc(100vh - 40px)" }}>
+        <Viewer onViewerCreated={_onViewerCreated} />
+      </div>
+    </>
   );
 };
 

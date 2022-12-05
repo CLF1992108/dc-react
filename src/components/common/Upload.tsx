@@ -1,14 +1,11 @@
 import { Box } from "@mui/material";
-import React, { useCallback } from "react";
+import React from "react";
 import { useDropzone } from "react-dropzone";
-
-export function Update() {
-  const onDrop = useCallback((acceptedFiles: any) => {
-    // Do something with the files
-    debugger;
-  }, []);
+export interface UpdateProp {
+  onDrop: (acceptedFiles: any) => void;
+}
+export const Update: React.FC<UpdateProp> = ({ onDrop }) => {
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
-
   return (
     <Box
       display="flex"
@@ -28,4 +25,4 @@ export function Update() {
       <Box>点击或者拖住文件上传数据</Box>
     </Box>
   );
-}
+};

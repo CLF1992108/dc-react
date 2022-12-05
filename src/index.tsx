@@ -1,7 +1,6 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
 import axios from "axios";
-
 import { DcLoader, HttpLoader } from "./loader";
 import RouteList from "./router";
 import "./themes/index.scss";
