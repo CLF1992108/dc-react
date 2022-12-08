@@ -15,7 +15,7 @@ import "./themes/index.scss";
       global.Config = res.data;
       const { Cesium } = DC.Namespace;
       global["Cesium"] = Cesium;
-      const container = document.getElementById("root");
+      const container = document.getElementById("root") as HTMLElement;
       const root = createRoot(container);
       root.render(<RouteList />);
     }

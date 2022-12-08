@@ -3,7 +3,17 @@ import { addOverlay, deleteOverlay, updateOverlay } from "../api/layerReq";
 import { HcWidget } from "../interfaces";
 import { hcEditor } from "../store/HcEditor";
 import { TypeProps } from "../types/Overlay";
+import PubSub from 'pubsub-js'
 class HcOverlay extends HcWidget {
+  constructor() {
+    super();
+    let mySubscriber = function (msg: string, data: any) {
+      let layer = hcEditor.getLayer(data.type)
+      let overlay = layer.getOverlaysByAttr('id', data.id)
+      hcEditor.Viewer.flyTo(overlay[0], 2)
+    };
+    PubSub.subscribe('FLY_TO_OVERLAY', mySubscriber);
+  }
   override async add(overlay: any, layer: any, parm: TypeProps) {
     let plot = hcEditor.Plot
     this.setOverlayAttr(overlay, parm)
@@ -11,6 +21,9 @@ class HcOverlay extends HcWidget {
     if (!id) {
       return alert("添加失败")
     }
+    debugger
+    overlay.attr.id = id
+    console.log(overlay.attr.id)
     layer.addOverlay(overlay)
     plot.edit(overlay)
     overlay.icon = parm.icon
@@ -50,5 +63,6 @@ class HcOverlay extends HcWidget {
       property: {}
     }
   }
+
 }
 export const hcOverlay = new HcOverlay()

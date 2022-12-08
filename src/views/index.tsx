@@ -95,7 +95,11 @@ const App: React.FC<AppProps> = (AppProps) => {
         </Box>
       </HDrawer>
 
-      <div className="home" style={{ height: "calc(100vh - 40px)" }}>
+      <div
+        id="viewer"
+        className="home"
+        style={{ height: "calc(100vh - 40px)" }}
+      >
         <Viewer onViewerCreated={_onViewerCreated} />
       </div>
     </>

@@ -17,6 +17,7 @@ export async function getTypeList(params: any) {
         "checked": true,
         "width": 5,
         "color": "rgba(255,0,0, .9)",
+
       },
       {
         "id": "2",
@@ -320,15 +321,15 @@ export async function addOverlay(params: any) {
   return params.id
 }
 export async function updateOverlay(params: Record<string, unknown>) {
-  let overlays = window.localStorage.getItem(params['type'] as string)
-  let objs
-  objs = overlays !== null && JSON.parse(overlays)
-  objs.forEach((element: { id: unknown; property: Record<string, unknown> }) => {
-    if (element.id === params['id']) {
-      element.property = params['property'] as Record<string, unknown>
-    }
-  });
-  window.localStorage.setItem(params['type'] as string, JSON.stringify(objs));
+  // let overlays = window.localStorage.getItem(params['type'] as string)
+  // let objs
+  // objs = overlays !== null && JSON.parse(overlays)
+  // objs.forEach((element: { id: unknown; property: Record<string, unknown> }) => {
+  //   if (element.id === params['id']) {
+  //     element.property = params['property'] as Record<string, unknown>
+  //   }
+  // });
+  // window.localStorage.setItem(params['type'] as string, JSON.stringify(objs));
 }
 export async function deleteOverlay(params: any) { }
 

@@ -438,7 +438,7 @@ declare module 'dc' {
 
     getOverlayById(id: String): Overlay
 
-    getOverlaysByAttr(attrName: String, attrVal: any): Overlay
+    getOverlaysByAttr(attrName: String, attrVal: any): Overlay[]
 
     eachOverlay(method: Function, context: any): Layer
 
