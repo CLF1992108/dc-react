@@ -7,7 +7,7 @@ import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
-import html2canvas from "html2canvas";
+import { hcEditor } from "../../store/HcEditor";
 
 export interface ScenesProps {
   name: string;
@@ -32,49 +32,11 @@ export const Scenes = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
   const setCover = () => {
-    let ele = document.getElementsByClassName(
-      "cesium-widget"
-    )[0] as HTMLElement;
-    debugger;
-    // let canvas = ele.children[0] as any;
-    let canvas = document.createElement("canvas");
-    canvas.width = 100;
-    canvas.height = 50;
-    canvas.style.backgroundColor = "#f00";
-    if (canvas.getContext) {
-      const van = canvas.getContext("2d");
-      const str = "我是被绘制的文字";
-      if (van) {
-        van.beginPath();
-        van.strokeStyle = "red"; // 设置画笔颜色为红色，即字体颜色
-        van.font = "28px serif"; // 设置字体大小
-        console.log(van.measureText(str)); // 打印测算返回结果(下面截图)
-        van.strokeText(str, 20, 30, 100); // 最大宽度设置100
-        van.closePath();
-      }
-    } else {
-      alert("不支持");
-    }
-    var img = new Image();
-    img.src = canvas.toDataURL("image/png");
-    console.log(img.src);
-    // img.style.cssText +=
-    //   "position:absolute;width:100%;left:0;top:0;opacity: 0;z-index: 2000000;";
+    const canvas = hcEditor.Viewer.canvas;
+    const img = new Image();
+    hcEditor.Viewer.scene.render();
+    img.src = canvas.toDataURL("image/jpeg");
     setImg(img.src);
-    // html2canvas(ele, {
-    //   useCORS: true,
-    //   logging: false,
-    //   y: 0, //  决绝竖向滚动条时，出现空白区域
-    //   // width: canvas["width"], //设置canvas尺寸与所截图尺寸相同，防止白边
-    //   // height: canvas["height"], //防止白边
-    // }).then(function (canvas) {
-    //   var img = new Image();
-    //   img.src = canvas.toDataURL("image/png");
-    //   console.log(img.src);
-    //   img.style.cssText +=
-    //     "position:absolute;width:100%;left:0;top:0;opacity: 0;z-index: 20;";
-    //   setImg(img.src);
-    // });
   };
   return (
     <>
@@ -109,9 +71,13 @@ export const Scenes = () => {
         </ListItem>
         <ListItem>场景封面</ListItem>
         <ListItem>
-          <img src={img} width={196} height={108}></img>
           <Card sx={{ width: "100%" }}>
-            <CardMedia component="img" image={img} alt="green iguana" />
+            <CardMedia
+              component="img"
+              image={img}
+              alt="green iguana"
+              height={150}
+            />
             <CardContent sx={{ p: 0.5 }}>
               <Typography variant="body2" color="text.secondary">
                 将当前视角设置成封面
