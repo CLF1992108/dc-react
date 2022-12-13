@@ -1,6 +1,6 @@
 import { LayerGroup as DCLayerGroup, Overlay as DCOverlay, Plot, Viewer as DCViewer } from "dc";
 import { makeAutoObservable } from "mobx"
-import { hcOverlay } from "../core/Overlay";
+import { hcOverlay } from "../core/HcOverlay";
 import { TypeProps } from "../types/Overlay";
 export class HcEditor {
   private viewer!: DCViewer;

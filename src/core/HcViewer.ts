@@ -39,7 +39,7 @@ class HcViewer {
       this.viewer.addBaseLayer(layers, {
         iconUrl,
         name: iconName
-      })
+      } as unknown as JSON)
 
     }))
 

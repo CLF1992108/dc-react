@@ -124,6 +124,7 @@ const Property: React.FC<GisPropertyPanelProps> = ({
   let setPanelCallback = useCallback(async () => {
     const params = { type: hcEditor.CurrentOverlay?.type };
     let propsListByType = await getPropsListByType(params);
+    //@ts-ignore
     const res: PropsOption[] = propsListByType.result;
     let temps: PropsOption[] = [];
     temps = res.map((ele: PropsOption) => {

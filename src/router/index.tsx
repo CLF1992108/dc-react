@@ -6,7 +6,7 @@ class RouteList extends React.PureComponent {
   override render() {
     return (
       <Router>
-        <Route path="/" component={App} />
+        <Route path="/App" component={App} />
       </Router>
     );
   }

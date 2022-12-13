@@ -10,6 +10,7 @@ import Typography from "@mui/material/Typography";
 import { hcEditor } from "../../store/HcEditor";
 
 export interface ScenesProps {
+  id?: string;
   name: string;
   desc: string;
   cover: string;

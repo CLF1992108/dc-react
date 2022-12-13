@@ -3,8 +3,9 @@ import React, { useEffect, useState } from "react";
 import { HDrawer } from "../components/common/HDrawer";
 import ResponsiveAppBar from "../components/ResponsiveAppBar";
 import { Viewer } from "../components/Viewer";
-import HcViewer from "../core/HCViewer";
+import HcViewer from "../core/HcViewer";
 import { MapOptions } from "../core/type";
+
 import { modules } from "./viewConfig";
 export interface AppProps {}
 

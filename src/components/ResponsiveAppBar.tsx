@@ -44,12 +44,11 @@ const ResponsiveAppBar: React.FC<ResponsiveAppBarProps> = ({ onClick }) => {
           图层管理
         </Box>
         <Divider orientation="vertical" flexItem sx={{ bgcolor: "#fff" }} />
-        <Box sx={{ cursor: "pointer", pl: 2, pr: 2 }}>素材库</Box>
-        <Divider orientation="vertical" flexItem sx={{ bgcolor: "#fff" }} />
-        <Box sx={{ cursor: "pointer", pl: 2, pr: 2 }}>标会</Box>
+        <Box sx={{ cursor: "pointer", pl: 2, pr: 2 }}>导入素材</Box>
         <Divider orientation="vertical" flexItem sx={{ bgcolor: "#fff" }} />
         <Box sx={{ cursor: "pointer", pl: 2, pr: 2 }}>测量</Box>
-        <Divider orientation="vertical" flexItem sx={{ bgcolor: "#fff" }} />
+
+        <Box sx={{ cursor: "pointer", pl: 2, pr: 2, flex: 1 }}>预览</Box>
       </Toolbar>
     </AppBarStyle>
   );

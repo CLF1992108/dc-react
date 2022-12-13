@@ -5,7 +5,6 @@ import TreeItem, { TreeItemProps, treeItemClasses } from "@mui/lab/TreeItem";
 import Typography from "@mui/material/Typography";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import AddIcon from "@mui/icons-material/Add";
 import { useEffect, useState, useCallback } from "react";
 import { getOverlaysByLayerId, getTypeList } from "../../api/layerReq";
 import PubSub from "pubsub-js";
