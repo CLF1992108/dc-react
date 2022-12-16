@@ -1,14 +1,15 @@
-'use strict'
+'use strict';
 
-const path = require('path')
-const HtmlWebpackPlugin = require('html-webpack-plugin')
-const MiniCssExtractPlugin = require('mini-css-extract-plugin')
-const CopywebpackPlugin = require('copy-webpack-plugin')
-const TerserPlugin = require('terser-webpack-plugin')
-const dvgisDist = './node_modules/@dvgis'
-const webpack = require('webpack')
+const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const CopywebpackPlugin = require('copy-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
+const dvgisDist = './node_modules/@dvgis';
+const webpack = require('webpack');
+const config = require('./config/env/config');
 module.exports = (env, argv) => {
-  const IS_PROD = (argv && argv.mode === 'production') || false
+  const IS_PROD = (argv && argv.mode === 'production') || false;
   return {
     mode: IS_PROD ? 'production' : 'development',
     entry: {
@@ -21,12 +22,29 @@ module.exports = (env, argv) => {
     },
     devtool: IS_PROD ? false : 'cheap-module-source-map',
     devServer: {
+      proxy: {
+        '/admin/fast-go-gis/': {
+          target: 'http://192.168.18.142:9999', //请求本地 
+          ws: false,
+          changeOrigin: true,
+          pathRewrite: {
+            '^': ''
+          },
+        },
+        '/admin/ajax/': {
+          target: 'http://192.168.18.142:8201', //请求本地 
+          secure: false,
+          pathRewrite: {
+            '^': ''
+          },
+        },
+      },
       progress: true, // 命令行中会显示打包的进度
       liveReload: true,
-      port: 5112,
+      port: 5000,
       filename: 'tsc_out.js',
       writeToDisk: (filename) => {
-        return /tsc_out.js/.test(filename)
+        return /tsc_out.js/.test(filename);
       }, // 传入一个函数用来筛选哪些文件需要写入硬盘
     },
     module: {
@@ -128,6 +146,10 @@ module.exports = (env, argv) => {
       }),
       new HtmlWebpackPlugin({
         template: path.resolve(__dirname, 'public/index.html'),
+      }),
+      new webpack.DefinePlugin({
+        API_URL: JSON.stringify(config.API_URL),
+        NODE_ENV: process.env.NODE_ENV,
       }),
     ],
     resolve: {

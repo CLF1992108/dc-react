@@ -3,7 +3,7 @@ import { reaction } from "mobx";
 import { observer } from "mobx-react-lite";
 import React, { useCallback, useEffect, useState } from "react";
 import { createRoot, Root } from "react-dom/client";
-import { getTypeList } from "../api/layerReq";
+import { getTypeList } from "../api/gisReq";
 import { hcOverlay } from "../core/HcOverlay";
 import { hcEditor } from "../store/HcEditor";
 import { TypeProps } from "../types/Overlay";

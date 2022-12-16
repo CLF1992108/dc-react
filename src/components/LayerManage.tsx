@@ -1,7 +1,7 @@
 import { Box, Checkbox, FormControlLabel, FormGroup } from "@mui/material";
 import { observer } from "mobx-react-lite";
 import React, { useCallback, useEffect, useState } from "react";
-import { getOverlaysByLayerId, getTypeList } from "../api/layerReq";
+import { getOverlaysByLayerId, getTypeList } from "../api/gisReq";
 import { hcEditor } from "../store/HcEditor";
 import { TypeProps } from "../types/Overlay";
 import { hcOverlay } from "../core/HcOverlay";
@@ -138,7 +138,6 @@ const LayerManage: React.FC<LayerManageProps> = ({}) => {
 
       let geojsonLayer = new DC.GeoJsonLayer("id", json);
       geojsonLayer.eachOverlay((item: any) => {
-        debugger;
         // item 为一个entity,
         if (item.polyline) {
           //todo

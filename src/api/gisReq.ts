@@ -1,5 +1,81 @@
-import axios from "axios";
-import { GisApi } from "./url";
+import { getReq, IResponseResult, postReq, ResponseStatus } from "../utils/axios";
+import { SceneApi, UploadApi } from ".";
+import { ViewProps } from "../views/Scenes";
+export type GetResponseDataProps = {
+  rows: [],
+  total: number
+}
+// export type getResponseProps = {
+//   code: number,
+//   message: string,
+//   data: GetResponseDataProps
+// }
+// export type PostResponseDataProps = {
+//   id: number,
+//   count: number
+// }
+export type PostResponseProps = {
+  code: number,
+  message: string,
+  data: PostResponseProps
+}
+export type QueryParamProps = {
+  filter: string
+}
+export type SceneProps = {
+  id?: number,
+  name: string,
+  remark: string,
+  cover: string,
+  view: string | ViewProps,
+  logo: string,
+  weigh?: number,
+  userId?: number,
+  status?: string
+}
+export type UploadResProps = {
+  url: string,
+  fullurl: string
+}
+export async function upload(file: File): Promise<UploadResProps | null> {
+  const fd = new FormData();
+  fd.append("0", "[");
+  fd.append("1", "]");
+  fd.append("category", "");
+  fd.append("file", file);
+  const result = await postReq(UploadApi.upload, fd, { headers: { "content-type": "multiparty/form-data" } })
+  if (result.code === ResponseStatus.Ok) {
+    let data = result.data
+    return data;
+  }
+  return null
+}
+export async function getSceneList(params: QueryParamProps) {
+  const result: any = await getReq(SceneApi.list, { params })
+  if (result.code === ResponseStatus.Ok) {
+    if (result.data) {
+      let data = result.data as SceneProps
+      data["rows"][0].view = data["rows"][0].view && JSON.parse(data["rows"][0].view as string)
+      return data && data["rows"];
+    }
+
+  }
+  return null
+}
+export async function addScene(params: SceneProps) {
+  const result = await postReq(SceneApi.add, params)
+  return result.code === ResponseStatus.Ok
+}
+export async function editScene(ids: number, row: SceneProps) {
+  const result = await postReq(SceneApi.edit, { ids, row })
+  return result.code === ResponseStatus.Ok
+}
+export async function delScene(ids: string) {
+  const result = await postReq(SceneApi.del, { ids })
+  return result.code === ResponseStatus.Ok
+}
+
+
 export async function getGeoJson(type: string) {
   let geojson = {
     "type": "FeatureCollection",
@@ -212,7 +288,7 @@ export async function getPropsListByType(params: { type: String }) {
       "result": [
         {
           "key": "FC1",
-          "type": "String",
+          "type": "string",
           "label": "客户名称",
           "name": "FC1",
           disabled: false
@@ -250,43 +326,43 @@ export async function getPropsListByType(params: { type: String }) {
         },
         // {
         //   "key": "FC3",
-        //   "type": "String",
+        //   "type": string,
         //   "label": "客户",
         //   "name": "FC3"
         // },
         // {
         //   "key": "FC4",
-        //   "type": "String",
+        //   "type": string,
         //   "label": "客户",
         //   "name": "FC4"
         // },
         // {
         //   "key": "FC5",
-        //   "type": "String",
+        //   "type": string,
         //   "label": "客户",
         //   "name": "FC5"
         // },
         // {
         //   "key": "FC6",
-        //   "type": "String",
+        //   "type": string,
         //   "label": "客户",
         //   "name": "FC6"
         // },
         // {
         //   "key": "FC7",
-        //   "type": "String",
+        //   "type": string,
         //   "label": "客户",
         //   "name": "FC7"
         // },
         // {
         //   "key": "FC8",
-        //   "type": "String",
+        //   "type": string,
         //   "label": "客户",
         //   "name": "FC8"
         // },
         // {
         //   "key": "FC9",
-        //   "type": "String",
+        //   "type": string,
         //   "label": "客户",
         //   "name": "FC9"
         // },
@@ -298,21 +374,21 @@ export async function getPropsListByType(params: { type: String }) {
       "result": [
         {
           "key": "FC1",
-          "type": "String",
+          "type": "string",
           "label": "字段4",
           "name": "FC1",
           disabled: true
         },
         {
           "key": "FC2",
-          "type": "String",
+          "type": "string",
           "label": "字段5",
           "name": "FC2",
           disabled: true
         },
         {
           "key": "FC3",
-          "type": "String",
+          "type": "string",
           "label": "字段6",
           "name": "FC3",
           disabled: true
@@ -358,7 +434,7 @@ export async function getPropsListByType(params: { type: String }) {
       "result": [
         {
           "key": "FC7",
-          "type": "String",
+          "type": "string",
           "label": "字段7",
           "name": "FC7",
           disabled: true

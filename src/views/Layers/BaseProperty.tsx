@@ -96,7 +96,6 @@ export const BaseProperty: React.FC<BasePropertyProps> = ({}) => {
   const [opts, setOpts] = useState<PropsOption[]>([]);
   const [mods, setMods] = useState({});
   const mySubscriber = function (msg: string, data: any) {
-    debugger;
     if (data === "Layer") {
       setOpts([...layerOpts]);
       setMods({ ...layerModels });

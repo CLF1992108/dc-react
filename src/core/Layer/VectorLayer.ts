@@ -1,5 +1,5 @@
 import { Viewer as DCViewer, VectorLayer as DcVectorLayer } from "dc";
-import { getGeoJson } from "../../api/layerReq";
+import { getGeoJson } from "../../api/gisReq";
 import { ILayer } from "../../interfaces/ILayer";
 import { Overlay } from "../Overlay";
 export type LayerProps = {

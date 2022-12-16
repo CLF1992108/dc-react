@@ -3,7 +3,7 @@ import { PropertyPanel } from "@haichuang/components";
 import { Box, Button, Divider, Grid, makeStyles, SxProps } from "@mui/material";
 import { reaction } from "mobx";
 import { hcEditor } from "../store/HcEditor";
-import { getPropsListByType } from "../api/layerReq";
+import { getPropsListByType } from "../api/gisReq";
 type TFormValues = Record<string, unknown>;
 type SelectProps = {
   key: string | number;

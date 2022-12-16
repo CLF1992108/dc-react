@@ -1,5 +1,5 @@
 import { GeoJsonLayer as DcGeoJsonLayer } from "dc";
-import { getGeoJson } from "../../api/layerReq";
+import { getGeoJson } from "../../api/gisReq";
 import { VectorLayer } from "./VectorLayer";
 
 export type GeometryProps = {
@@ -10,7 +10,6 @@ export type FeatureProps = {
   type: string,
   properties: Record<string, unknown>,
   geometry: GeometryProps
-
 }
 export type GeoJsonProps = {
   type: string,

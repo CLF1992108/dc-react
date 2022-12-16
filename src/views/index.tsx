@@ -1,12 +1,13 @@
-import { Box, Toolbar } from "@mui/material";
-import React, { useEffect, useState } from "react";
-import { HDrawer } from "../components/common/HDrawer";
-import ResponsiveAppBar from "../components/ResponsiveAppBar";
-import { Viewer } from "../components/Viewer";
-import HcViewer from "../core/HcViewer";
-import { MapOptions } from "../core/type";
+import { Box, Toolbar } from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import { getSceneList } from '../api/gisReq';
+import { HDrawer } from '../components/common/HDrawer';
+import ResponsiveAppBar from '../components/ResponsiveAppBar';
+import { Viewer } from '../components/Viewer';
+import HcViewer from '../core/HcViewer';
+import { MapOptions } from '../core/type';
 
-import { modules } from "./viewConfig";
+import { modules } from './viewConfig';
 export interface AppProps {}
 
 const App: React.FC<AppProps> = (AppProps) => {
@@ -14,41 +15,41 @@ const App: React.FC<AppProps> = (AppProps) => {
   const [module, setModule] = useState(0);
   const _onViewerCreated = (viewer: any) => {
     const aMapImgOptions: MapOptions = {
-      iconUrl: "https://dc.dvgis.cn/examples/images/icon/img.png",
-      iconName: "高德影像",
-      style: "img",
-      crs: "WGS84",
+      iconUrl: 'https://dc.dvgis.cn/examples/images/icon/img.png',
+      iconName: '高德影像',
+      style: 'img',
+      crs: 'WGS84',
       cva: true,
       type: DC.ImageryType.AMAP,
     };
     const aMapVecOptions: MapOptions = {
-      iconUrl: "https://dc.dvgis.cn/examples/images/icon/elec.png",
-      iconName: "高德电子",
-      style: "vec",
-      crs: "WGS84",
+      iconUrl: 'https://dc.dvgis.cn/examples/images/icon/elec.png',
+      iconName: '高德电子',
+      style: 'vec',
+      crs: 'WGS84',
       cva: true,
       type: DC.ImageryType.AMAP,
     };
     const tdtImgOptions: MapOptions = {
-      iconUrl: "https://dc.dvgis.cn/examples/images/icon/img.png",
-      iconName: "天地图影像",
-      key: "02a9d2a704f39cf2d5d7c6b668c51330",
-      style: "img",
+      iconUrl: 'https://dc.dvgis.cn/examples/images/icon/img.png',
+      iconName: '天地图影像',
+      key: '02a9d2a704f39cf2d5d7c6b668c51330',
+      style: 'img',
       cva: true,
       type: DC.ImageryType.TDT,
     };
     const tdtVecOptions: MapOptions = {
-      iconUrl: "https://dc.dvgis.cn/examples/images/icon/elec.png",
-      iconName: "天地图电子",
-      key: "02a9d2a704f39cf2d5d7c6b668c51330",
-      style: "vec",
+      iconUrl: 'https://dc.dvgis.cn/examples/images/icon/elec.png',
+      iconName: '天地图电子',
+      key: '02a9d2a704f39cf2d5d7c6b668c51330',
+      style: 'vec',
       cva: true,
       type: DC.ImageryType.TDT,
     };
     const nightOptions: MapOptions = {
-      iconUrl: "http://am-img.gkiiot.com/editor/textures/暖色2.jpg",
-      iconName: "暖色",
-      url: "http://am-img.gkiiot.com/editor/textures/map19x1_5.png",
+      iconUrl: 'http://am-img.gkiiot.com/editor/textures/暖色2.jpg',
+      iconName: '暖色',
+      url: 'http://am-img.gkiiot.com/editor/textures/map19x1_5.png',
       type: DC.ImageryType.SINGLE_TILE,
     };
     let baseLayers = [
@@ -89,7 +90,7 @@ const App: React.FC<AppProps> = (AppProps) => {
       >
         <Box
           sx={{
-            color: "#fff",
+            color: '#fff',
           }}
         >
           {modules[module].component}
@@ -99,7 +100,7 @@ const App: React.FC<AppProps> = (AppProps) => {
       <div
         id="viewer"
         className="home"
-        style={{ height: "calc(100vh - 40px)" }}
+        style={{ height: 'calc(100vh - 40px)' }}
       >
         <Viewer onViewerCreated={_onViewerCreated} />
       </div>

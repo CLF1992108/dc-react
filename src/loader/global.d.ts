@@ -4,5 +4,6 @@ declare global {
   var viewerApi: any
   var Config: any
   var Http: any
+  var API_URL: any
 }
 export { }

@@ -6,7 +6,7 @@ import Typography from "@mui/material/Typography";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import { useEffect, useState, useCallback } from "react";
-import { getOverlaysByLayerId, getTypeList } from "../../api/layerReq";
+import { getOverlaysByLayerId, getTypeList } from "../../api/gisReq";
 import PubSub from "pubsub-js";
 import CenterFocusStrongIcon from "@mui/icons-material/CenterFocusStrong";
 type StyledTreeItemProps = TreeItemProps & {

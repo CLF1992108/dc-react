@@ -1,4 +1,4 @@
-import { addOverlay, deleteOverlay, updateOverlay } from "../api/layerReq";
+import { addOverlay, deleteOverlay, updateOverlay } from "../api/gisReq";
 import { HcWidget } from "../interfaces";
 import { hcEditor } from "../store/HcEditor";
 import { TypeProps } from "../types/Overlay";
@@ -20,7 +20,6 @@ class HcOverlay extends HcWidget {
     if (!id) {
       return alert("添加失败")
     }
-    debugger
     overlay.attr.id = id
     console.log(overlay.attr.id)
     layer.addOverlay(overlay)

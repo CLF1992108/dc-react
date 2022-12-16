@@ -11,7 +11,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import AddIcon from "@mui/icons-material/Add";
 import { useEffect, useState, useCallback } from "react";
 import { TypeProps } from "../../types/Overlay";
-import { getOverlaysByLayerId, getTypeList } from "../../api/layerReq";
+import { getTypeList } from "../../api/gisReq";
 import { ChildrenTree } from "./ChildrenTree";
 import { hcEditor } from "../../store/HcEditor";
 import PubSub from "pubsub-js";
@@ -107,7 +107,6 @@ function StyledTreeItem(props: StyledTreeItemProps) {
                 color="inherit"
                 sx={{ mr: 1 }}
                 onClick={(e: { stopPropagation: () => void }) => {
-                  debugger;
                   PubSub.publish("CHANGE_TYPE", "Layer");
                 }}
               />
