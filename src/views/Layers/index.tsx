@@ -1,20 +1,23 @@
-import * as React from "react";
-import Box from "@mui/material/Box";
-import DeleteIcon from "@mui/icons-material/Delete";
-import { Stack } from "@mui/material";
-import AddIcon from "@mui/icons-material/Add";
-import { LayerTree } from "./LayerTree";
-import { BaseProperty } from "./BaseProperty";
+import * as React from 'react';
+import Box from '@mui/material/Box';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { Stack } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
+import { LayerTree } from './LayerTree';
+import { BaseProperty } from './BaseProperty';
+import { AddLayer } from './AddLayer';
+import { useState } from 'react';
 
 export const Layers = () => {
+  const [open, setOpen] = useState(false);
   return (
     <>
       <Stack
         direction="column"
         display="flex"
         sx={{
-          maxHeight: "calc(100vh - 85px)",
-          height: "calc(100vh - 85px)",
+          maxHeight: 'calc(100vh - 85px)',
+          height: 'calc(100vh - 85px)',
         }}
       >
         <Stack
@@ -26,25 +29,25 @@ export const Layers = () => {
           sx={{
             pl: 1,
             pr: 1,
-            height: "30px",
-            bgcolor: "#222",
-            color: "#fff",
-            fontSize: "12px",
+            height: '30px',
+            bgcolor: '#222',
+            color: '#fff',
+            fontSize: '12px',
           }}
         >
           <Stack sx={{ flexGrow: 1 }}>场景图层</Stack>
           <Box
             component={AddIcon}
             color="inherit"
-            sx={{ mr: 1, cursor: "pointer" }}
+            sx={{ mr: 1, cursor: 'pointer' }}
             onClick={() => {
-              alert(1);
+              setOpen(true);
             }}
           />
           <Box
             component={DeleteIcon}
             color="inherit"
-            sx={{ mr: 1, cursor: "pointer" }}
+            sx={{ mr: 1, cursor: 'pointer' }}
             onClick={() => {
               alert(3);
             }}
@@ -54,11 +57,11 @@ export const Layers = () => {
           sx={{
             flexGrow: 1,
             maxWidth: 320,
-            height: "1000px",
-            overflowY: "auto",
+            height: '1000px',
+            overflowY: 'auto',
           }}
         >
-          <Box sx={{ height: "800px" }}>
+          <Box sx={{ height: '800px' }}>
             <LayerTree></LayerTree>
           </Box>
         </Stack>
@@ -71,20 +74,26 @@ export const Layers = () => {
           sx={{
             pl: 1,
             pr: 1,
-            height: "30px",
-            bgcolor: "#222",
-            color: "#fff",
-            fontSize: "12px",
+            height: '30px',
+            bgcolor: '#222',
+            color: '#fff',
+            fontSize: '12px',
           }}
         >
           <Stack sx={{ flexGrow: 1, pt: 0.5, pb: 0.5 }}>基础属性</Stack>
         </Stack>
-        <Stack sx={{ overflowY: "auto" }}>
-          <Box sx={{ height: "500px" }}>
+        <Stack sx={{ overflowY: 'auto' }}>
+          <Box sx={{ height: '500px' }}>
             <BaseProperty></BaseProperty>
           </Box>
         </Stack>
       </Stack>
+      <AddLayer
+        open={open}
+        close={() => {
+          setOpen(false);
+        }}
+      ></AddLayer>
     </>
   );
 };

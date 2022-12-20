@@ -11,10 +11,11 @@ import EditIcon from "@mui/icons-material/Edit";
 import AddIcon from "@mui/icons-material/Add";
 import { useEffect, useState, useCallback } from "react";
 import { TypeProps } from "../../types/Overlay";
-import { getTypeList } from "../../api/gisReq";
 import { ChildrenTree } from "./ChildrenTree";
 import { hcEditor } from "../../store/HcEditor";
 import PubSub from "pubsub-js";
+import { VectorLayer } from "../../core/Layer/VectorLayer";
+
 declare module "react" {
   interface CSSProperties {
     "--tree-view-color"?: string;
@@ -136,10 +137,9 @@ export const LayerTree = () => {
   const [types, setTypes] = useState<TypeProps[]>([]);
 
   const fetchData = useCallback(async () => {
-    const param = {};
-    let res = await getTypeList(param),
-      resTypes = res.result;
-    setTypes([...types, ...resTypes]);
+    let res = await VectorLayer.getAllLayers(),
+      resTypes =  res?.result;
+      resTypes && setTypes([...types, ...resTypes]);
   }, []);
   useEffect(() => {
     fetchData();

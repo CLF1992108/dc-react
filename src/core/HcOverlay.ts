@@ -1,11 +1,9 @@
 import { addOverlay, deleteOverlay, updateOverlay } from "../api/gisReq";
-import { HcWidget } from "../interfaces";
 import { hcEditor } from "../store/HcEditor";
 import { TypeProps } from "../types/Overlay";
 import PubSub from 'pubsub-js'
-class HcOverlay extends HcWidget {
+class HcOverlay {
   constructor() {
-    super();
     let mySubscriber = function (msg: string, data: any) {
       let layer = hcEditor.getLayer(data.type)
       let overlay = layer.getOverlaysByAttr('id', data.id)
@@ -13,7 +11,7 @@ class HcOverlay extends HcWidget {
     };
     PubSub.subscribe('FLY_TO_OVERLAY', mySubscriber);
   }
-  override async add(overlay: any, layer: any, parm: TypeProps) {
+  async add(overlay: any, layer: any, parm: TypeProps) {
     let plot = hcEditor.Plot
     this.setOverlayAttr(overlay, parm)
     let id = await addOverlay(overlay.attr)
@@ -41,17 +39,17 @@ class HcOverlay extends HcWidget {
     })
     return overlay
   }
-  override update(params: Record<string, unknown>) {
+  update(params: Record<string, unknown>) {
     updateOverlay(params)
     return true
   }
-  override delete(overlay: any) {
+  delete(overlay: any) {
     const layer = hcEditor.getLayer(overlay.attr.type)
     layer.removeOverlay(overlay)
     deleteOverlay({})
 
   }
-  override setOverlayAttr(overlay: any, parm: TypeProps) {
+  setOverlayAttr(overlay: any, parm: TypeProps) {
     overlay.attr = {
       type: parm.type,
       name: parm.name,

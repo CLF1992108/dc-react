@@ -1,13 +1,13 @@
-import { Box, FormGroup, List, ListItem, ListItemText } from "@mui/material";
-import { reaction } from "mobx";
-import { observer } from "mobx-react-lite";
-import React, { useCallback, useEffect, useState } from "react";
-import { createRoot, Root } from "react-dom/client";
-import { getTypeList } from "../api/gisReq";
-import { hcOverlay } from "../core/HcOverlay";
-import { hcEditor } from "../store/HcEditor";
-import { TypeProps } from "../types/Overlay";
-import Property, { PropsOption } from "./Property";
+import { Box, FormGroup, List, ListItem, ListItemText } from '@mui/material';
+import { reaction } from 'mobx';
+import { observer } from 'mobx-react-lite';
+import React, { useCallback, useEffect, useState } from 'react';
+import { createRoot, Root } from 'react-dom/client';
+import { getTypeList } from '../api/gisReq';
+import { hcOverlay } from '../core/HcOverlay';
+import { hcEditor } from '../store/HcEditor';
+import { TypeProps } from '../types/Overlay';
+import Property, { PropsOption } from './Property';
 export interface EditorProps {}
 const Editor: React.FC<EditorProps> = ({}) => {
   const [types, setTypes] = useState<TypeProps[]>([]);
@@ -46,7 +46,7 @@ const Editor: React.FC<EditorProps> = ({}) => {
       () => hcEditor.Open,
       async () => {
         if (hcEditor.Open) {
-          const container = document.getElementById("popup");
+          const container = document.getElementById('popup');
           if (container) {
             root = createRoot(container);
             root.render(
@@ -74,9 +74,9 @@ const Editor: React.FC<EditorProps> = ({}) => {
   return (
     <Box
       sx={{
-        width: "120px",
-        maxHeight: "500px",
-        overflow: "auto",
+        width: '120px',
+        maxHeight: '500px',
+        overflow: 'auto',
       }}
     >
       <FormGroup>

@@ -1,13 +1,13 @@
-import { Box, Checkbox, FormControlLabel, FormGroup } from "@mui/material";
-import { observer } from "mobx-react-lite";
-import React, { useCallback, useEffect, useState } from "react";
-import { getOverlaysByLayerId, getTypeList } from "../api/gisReq";
-import { hcEditor } from "../store/HcEditor";
-import { TypeProps } from "../types/Overlay";
-import { hcOverlay } from "../core/HcOverlay";
-import { reaction } from "mobx";
-import Property, { PropsOption } from "./Property";
-import { createRoot } from "react-dom/client";
+import { Box, Checkbox, FormControlLabel, FormGroup } from '@mui/material';
+import { observer } from 'mobx-react-lite';
+import React, { useCallback, useEffect, useState } from 'react';
+import { getOverlaysByLayerId, getTypeList } from '../api/gisReq';
+import { hcEditor } from '../store/HcEditor';
+import { TypeProps } from '../types/Overlay';
+import { hcOverlay } from '../core/HcOverlay';
+import { reaction } from 'mobx';
+import Property, { PropsOption } from './Property';
+import { createRoot } from 'react-dom/client';
 export interface LayerManageProps {}
 
 const LayerManage: React.FC<LayerManageProps> = ({}) => {
@@ -28,19 +28,19 @@ const LayerManage: React.FC<LayerManageProps> = ({}) => {
     let res = await getOverlaysByLayerId(params);
     res.forEach((element: any) => {
       let overlay: any;
-      if (element.eleType === "billboard") {
+      if (element.eleType === 'billboard') {
         let position = new DC.Position(
-          element.position["lng"],
-          element.position["lat"]
+          element.position['lng'],
+          element.position['lat']
         );
         overlay = new DC.Billboard(position, layer.attr.icon);
-      } else if (element.eleType === "polyline") {
+      } else if (element.eleType === 'polyline') {
         overlay = new DC.Polyline(element.positions);
         overlay.setStyle({
           width: layer.attr.width,
           material: new Cesium.Color.fromCssColorString(layer.attr.color), //颜色
         });
-      } else if (element.eleType === "polygon") {
+      } else if (element.eleType === 'polygon') {
         overlay = new DC.Polygon(element.positions);
         overlay.setStyle({
           material: new Cesium.Color.fromCssColorString(layer.attr.color), //颜色
@@ -68,22 +68,22 @@ const LayerManage: React.FC<LayerManageProps> = ({}) => {
 
       getOverlays(layer);
       let json = {
-        type: "FeatureCollection",
+        type: 'FeatureCollection',
         features: [
           {
-            type: "Feature",
+            type: 'Feature',
             properties: {
-              id: "123123123123",
+              id: '123123123123',
             },
             geometry: {
               coordinates: [23.589367664910725, 12.053289003883052],
-              type: "Point",
+              type: 'Point',
             },
           },
           {
-            type: "Feature",
+            type: 'Feature',
             properties: {
-              id: "11111",
+              id: '11111',
             },
             geometry: {
               coordinates: [
@@ -92,13 +92,13 @@ const LayerManage: React.FC<LayerManageProps> = ({}) => {
                 [58.021194131897715, -10.272348909080776],
                 [59.59664678261976, 0.8694361316624821],
               ],
-              type: "LineString",
+              type: 'LineString',
             },
           },
           {
-            type: "Feature",
+            type: 'Feature',
             properties: {
-              id: "222222",
+              id: '222222',
             },
             geometry: {
               coordinates: [
@@ -110,13 +110,13 @@ const LayerManage: React.FC<LayerManageProps> = ({}) => {
                   [22.086384642673806, 34.83479695068948],
                 ],
               ],
-              type: "Polygon",
+              type: 'Polygon',
             },
           },
           {
-            type: "Feature",
+            type: 'Feature',
             properties: {
-              id: "9999",
+              id: '9999',
             },
             geometry: {
               coordinates: [
@@ -130,13 +130,13 @@ const LayerManage: React.FC<LayerManageProps> = ({}) => {
                   [-10.476678502550953, -3.5789344235096934],
                 ],
               ],
-              type: "Polygon",
+              type: 'Polygon',
             },
           },
         ],
       };
 
-      let geojsonLayer = new DC.GeoJsonLayer("id", json);
+      let geojsonLayer = new DC.GeoJsonLayer('id', json);
       geojsonLayer.eachOverlay((item: any) => {
         // item 为一个entity,
         if (item.polyline) {
@@ -157,7 +157,7 @@ const LayerManage: React.FC<LayerManageProps> = ({}) => {
           layer.addOverlay(point);
           // layer.addOverlay(divIcon);
           layer.addOverlay(billboard);
-          let layerDom = new DC.HtmlLayer("dom");
+          let layerDom = new DC.HtmlLayer('dom');
           layerDom.addOverlay(divIcon);
           // hcEditor.getView;
         }
@@ -187,7 +187,7 @@ const LayerManage: React.FC<LayerManageProps> = ({}) => {
       () => hcEditor.Open,
       async () => {
         if (hcEditor.Open) {
-          const container = document.getElementById("popup");
+          const container = document.getElementById('popup');
           root = container && createRoot(container);
           root.render(
             <Property
@@ -210,9 +210,9 @@ const LayerManage: React.FC<LayerManageProps> = ({}) => {
   return (
     <Box
       sx={{
-        width: "120px",
-        maxHeight: "500px",
-        overflow: "auto",
+        width: '120px',
+        maxHeight: '500px',
+        overflow: 'auto',
       }}
     >
       <FormGroup>

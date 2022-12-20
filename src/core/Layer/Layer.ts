@@ -1,7 +1,10 @@
+
+// import { Viewer as DCViewer } from "dc"
 import { addLayer, delLayer, editLayer, getGeoJson, getLayerList, LayerProps, PointLayerAttr, PolygonLayerAttr, PolylineLayerAttr } from "../../api/gisReq";
 import { hcEditor } from "../../store/HcEditor";
-import { VectorLayer as DcVectorLayer } from "dc";
-export class VectorLayer {
+
+
+export class Layer {
   uuid?: number | undefined;
   pid?: number | undefined;
   sceneId: number;
@@ -9,58 +12,16 @@ export class VectorLayer {
   type: string;
   property: string | PointLayerAttr | PolylineLayerAttr | PolygonLayerAttr;
   panelField: string | Record<string, unknown>;
-  layer: DcVectorLayer
+  layer
   constructor(params: LayerProps) {
-    this.layer = new DC.VectorLayer(params.id)
+    this.layer = new DC.Layer()
     params.id && (this.uuid = params.id)
     this.sceneId = params.sceneId
     this.name = params.name
     this.type = params.type
     this.property = params.property
     this.panelField = params.panelField
-    this.layer.addTo(hcEditor.Viewer)
-  }
-  set UUID(v: number | undefined) {
-    this.uuid = v
-  }
-  get UUID() {
-    return this.uuid;
-  }
-  set Pid(v: number | undefined) {
-    this.pid = v
-  }
-  get Pid() {
-    return this.pid;
-  }
-  set SceneId(v: number) {
-    this.sceneId = v
-  }
-  get SceneId() {
-    return this.sceneId;
-  }
-  set Name(v: string) {
-    this.name = v
-  }
-  get Name() {
-    return this.name;
-  }
-  set Property(v: string | PointLayerAttr | PolylineLayerAttr | PolygonLayerAttr) {
-    this.property = v
-  }
-  get Property() {
-    return this.property
-  }
-  set PanelField(v: string | Record<string, unknown>) {
-    this.panelField = v
-  }
-  get PanelField() {
-    return this.panelField
-  }
-  set Layer(v: DcVectorLayer) {
-    this.layer = v
-  }
-  get Layer() {
-    return this.layer
+    // this.addTo(hcEditor.Viewer)
   }
   async add() {
     const params = {
@@ -106,6 +67,5 @@ export class VectorLayer {
     const url = getGeoJson(type)
     let layer = new DC.GeoJsonLayer(id, url);
   }
-
 
 }

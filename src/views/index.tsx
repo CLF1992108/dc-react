@@ -1,11 +1,11 @@
 import { Box, Toolbar } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import { getSceneList } from '../api/gisReq';
 import { HDrawer } from '../components/common/HDrawer';
 import ResponsiveAppBar from '../components/ResponsiveAppBar';
 import { Viewer } from '../components/Viewer';
 import HcViewer from '../core/HcViewer';
 import { MapOptions } from '../core/type';
+import { hcEditor } from '../store/HcEditor';
 
 import { modules } from './viewConfig';
 export interface AppProps {}
@@ -72,6 +72,24 @@ const App: React.FC<AppProps> = (AppProps) => {
     });
     globeRotate.start();
   };
+  const mySubscriber = (msg: string, data: any) => {
+    let globeRotate = new DC.GlobeRotate(hcEditor.Viewer, {
+      duration: 0.001,
+      callback: () => {
+        hcEditor.Viewer.flyToPosition(
+          new DC.Position(data.view.lng, data.view.lat, data.view.alt, 0, -90)
+        );
+      },
+    });
+    globeRotate.start();
+  };
+  useEffect(() => {
+    PubSub.subscribe('VIEW', mySubscriber);
+    return () => {
+      PubSub.unsubscribe('VIEW');
+    };
+  }, []);
+
   return (
     <>
       <ResponsiveAppBar

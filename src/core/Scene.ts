@@ -119,21 +119,23 @@ export class Scene {
   };
   static async getInstance(params: SceneProps | string) {
     let sceneProps: SceneProps | null;
-    if (typeof params === "string") {
-      const filter = { id: params }
-      let res = await getSceneList({ filter: JSON.stringify(filter) })
-      sceneProps = res && res[0]
-      if (!sceneProps) {
-        console.error("未找到对象");
-        return null
-      }
-    } else {
-      sceneProps = params;
-    }
-
     if (!Scene.instance) {
+      if (typeof params === "string") {
+        const filter = { id: params }
+        let res = await getSceneList({ filter: JSON.stringify(filter) })
+
+        sceneProps = res && res[0]
+        PubSub.publish('VIEW', sceneProps);
+        if (!sceneProps) {
+          console.error("未找到对象");
+          return null
+        }
+      } else {
+        sceneProps = params;
+      }
       Scene.instance = new Scene(sceneProps)
     }
+
     return Scene.instance
   };
   getAllScenes() { return [] };

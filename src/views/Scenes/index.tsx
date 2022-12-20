@@ -50,9 +50,14 @@ export const Scenes = () => {
     }
   };
   const mySubscriber =  (scene:Scene | null | undefined)=> {
-    return (msg: string, data: any)=>{
+    return async (msg: string, data: any)=>{
       if (scene) {
-        scene.saveScene();
+        let res = await scene.saveScene();
+        if(res){
+          alert("保存成功")
+        } else{
+          alert("保存失败")
+        }
       }
     }
   };
@@ -62,7 +67,6 @@ export const Scenes = () => {
     let sceneInstance = await Scene.getInstance(params);
     setScene(sceneInstance);
     PubSub.subscribe('SAVE', mySubscriber(sceneInstance));
-
     if (sceneInstance) {
       let param = sceneInstance.resyncParam(formData);
       setFormData({ ...param });
@@ -70,7 +74,6 @@ export const Scenes = () => {
   }, []);
   useEffect(() => {
     getInstance();
-    
     return () => {
       PubSub.unsubscribe('SAVE');
     };

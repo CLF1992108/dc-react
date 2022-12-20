@@ -1,6 +1,7 @@
 import { getReq, IResponseResult, postReq, ResponseStatus } from "../utils/axios";
-import { SceneApi, UploadApi } from ".";
+import { LayerApi, SceneApi, UploadApi } from ".";
 import { ViewProps } from "../views/Scenes";
+import { Type } from "typescript";
 export type GetResponseDataProps = {
   rows: [],
   total: number
@@ -20,7 +21,7 @@ export type PostResponseProps = {
   data: PostResponseProps
 }
 export type QueryParamProps = {
-  filter: string
+  filter?: string
 }
 export type SceneProps = {
   id?: number,
@@ -33,6 +34,42 @@ export type SceneProps = {
   userId?: number,
   status?: string
 }
+export type LayerProps = {
+  id?: number | undefined;
+  pid?: number | undefined;
+  sceneId: number;
+  name: string;
+  type: string;
+  property: string | PointLayerAttr | PolylineLayerAttr | PolygonLayerAttr;
+  panelField: string | Record<string, unknown>;
+  weigh?: number,
+  userId?: number,
+  adminId?: number,
+  tenantId?: number,
+  createdAt?: string,
+  updatedAt?: string,
+  status?: string
+}
+export type LayerAttr = {
+  id?: string | undefined;
+  name: string;
+  show: boolean;
+  eleType: string;
+}
+export type PointLayerAttr = {
+  pixelSize: number;
+  icon: string;
+} & LayerAttr
+export type PolylineLayerAttr = {
+  meterial: string;
+  width: number;
+} & LayerAttr
+export type PolygonLayerAttr = {
+  meterial: string;
+  outline: boolean, //是否显示边框
+  outlineColor: string, //边框颜色
+  outlineWidth: number, //边框宽度
+} & LayerAttr
 export type UploadResProps = {
   url: string,
   fullurl: string
@@ -54,7 +91,7 @@ export async function getSceneList(params: QueryParamProps) {
   const result: any = await getReq(SceneApi.list, { params })
   if (result.code === ResponseStatus.Ok) {
     if (result.data) {
-      let data = result.data as SceneProps
+      let data = result.data
       data["rows"][0].view = data["rows"][0].view && JSON.parse(data["rows"][0].view as string)
       return data && data["rows"];
     }
@@ -74,8 +111,35 @@ export async function delScene(ids: string) {
   const result = await postReq(SceneApi.del, { ids })
   return result.code === ResponseStatus.Ok
 }
+export async function getLayerList(params: QueryParamProps) {
+  const result: any = await getReq(LayerApi.list, { params })
+  if (result.code === ResponseStatus.Ok) {
+    if (result.data) {
+      let data = result.data
+      if (Array.isArray(data["rows"])) {
+        data["rows"][0].property = data["rows"][0].property && JSON.parse(data["rows"][0].property as string)
+        data["rows"][0].panelField = data["rows"][0].panelField && JSON.parse(data["rows"][0].panelField as string)
 
+      }
+      return data && data["rows"];
+    }
 
+  }
+  return null
+}
+
+export async function addLayer(params: LayerProps) {
+  const result = await postReq(LayerApi.add, params)
+  return result.code === ResponseStatus.Ok
+}
+export async function editLayer(ids: number, row: LayerProps) {
+  const result = await postReq(LayerApi.edit, { ids, row })
+  return result.code === ResponseStatus.Ok
+}
+export async function delLayer(ids: string) {
+  const result = await postReq(LayerApi.del, { ids })
+  return result.code === ResponseStatus.Ok
+}
 export async function getGeoJson(type: string) {
   let geojson = {
     "type": "FeatureCollection",

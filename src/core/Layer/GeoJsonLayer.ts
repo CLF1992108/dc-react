@@ -1,6 +1,5 @@
 import { GeoJsonLayer as DcGeoJsonLayer } from "dc";
 import { getGeoJson } from "../../api/gisReq";
-import { VectorLayer } from "./VectorLayer";
 
 export type GeometryProps = {
   coordinates: [],
@@ -20,25 +19,25 @@ export class GeoJsonLayer {
 
   }
   async getGeoJsonLayer(type: string) {
-    let geojson, layer, vectorLayer: VectorLayer;
+    // let geojson, layer, vectorLayer: VectorLayer;
 
-    geojson = await getGeoJson(type);
-    vectorLayer = new VectorLayer(type);
-    layer = new DcGeoJsonLayer(type + "Geojson", JSON.stringify(geojson))
-    layer.eachOverlay((item: any) => {
-      if (item.polyline) {
-        let polyline = DC.Polyline.fromEntity(item)
-        vectorLayer.addOverlay(polyline)
-      } else if (item.polygon) {
-        //todo
-        let polygon = DC.Polygon.fromEntity(item)
-        vectorLayer.addOverlay(polygon)
-      } else if (item.billboard) {
-        //todo
-        let billboard = DC.Billboard.fromEntity(item)
-        vectorLayer.addOverlay(billboard)
-      }
+    // geojson = await getGeoJson(type);
+    // vectorLayer = new VectorLayer(type);
+    // layer = new DcGeoJsonLayer(type + "Geojson", JSON.stringify(geojson))
+    // layer.eachOverlay((item: any) => {
+    //   if (item.polyline) {
+    //     let polyline = DC.Polyline.fromEntity(item)
+    //     vectorLayer.addOverlay(polyline)
+    //   } else if (item.polygon) {
+    //     //todo
+    //     let polygon = DC.Polygon.fromEntity(item)
+    //     vectorLayer.addOverlay(polygon)
+    //   } else if (item.billboard) {
+    //     //todo
+    //     let billboard = DC.Billboard.fromEntity(item)
+    //     vectorLayer.addOverlay(billboard)
+    //   }
 
-    }, {})
+    // }, {})
   }
 }

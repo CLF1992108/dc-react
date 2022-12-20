@@ -16,9 +16,16 @@ export const SceneApi = {
   del: "/admin/fast-go-gis/app/gis/scene/del",
 
 }
+export const LayerApi = {
+  list: "/admin/fast-go-gis/app/gis/layer/index",
+  add: "/admin/fast-go-gis/app/gis/layer/add",
+  edit: "/admin/fast-go-gis/app/gis/layer/edit",
+  del: "/admin/fast-go-gis/app/gis/layer/del",
+
+}
 export const MaterialApi = {
-  list: "/admin/fast-go-gis/gis/material/index",
-  add: "/admin/fast-go-gis/gis/material/add",
-  update: "/admin/fast-go-gis/gis/material/edit/*any/{ids}",
-  del: "/admin/fast-go-gis/gis/material/del"
+  list: "/admin/fast-go-gis/app/gis/material/index",
+  add: "/admin/fast-go-gis/app/gis/material/add",
+  edit: "/admin/fast-go-gis/app/gis/material/edit",
+  del: "/admin/fast-go-gis/app/gis/material/del",
 }
