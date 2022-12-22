@@ -8,7 +8,7 @@ export class VectorLayer {
   name: string;
   type: string;
   property: string | PointLayerAttr | PolylineLayerAttr | PolygonLayerAttr;
-  panelField: string | Record<string, unknown>;
+  panelField: string | Record<string, string | number | boolean>[];
   layer: DcVectorLayer
   constructor(params: LayerProps) {
     this.layer = new DC.VectorLayer(params.id)
@@ -50,7 +50,7 @@ export class VectorLayer {
   get Property() {
     return this.property
   }
-  set PanelField(v: string | Record<string, unknown>) {
+  set PanelField(v: string | Record<string, string | number | boolean>[]) {
     this.panelField = v
   }
   get PanelField() {
@@ -87,17 +87,18 @@ export class VectorLayer {
 
     return this
   }
-  async deleteById(id: string) {
+  static async deleteById(id: string) {
     let res = await delLayer(id);
     return res
   }
-  async getLayerById(id: string) {
+  static async getLayerById(id: string) {
     const filter = { id }
     let res = await getLayerList({ filter: JSON.stringify(filter) })
     return res
   }
   static async getAllLayers() {
     let res = await getLayerList({})
+    console.log(res)
     return res
   }
   getOverlayByGeoJson(type: string) {

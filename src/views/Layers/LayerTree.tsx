@@ -79,7 +79,8 @@ function StyledTreeItem(props: StyledTreeItemProps) {
     ...other
   } = props;
   const handleClick = (item: TypeProps) => {
-    return () => {
+    return (e: { stopPropagation: () => void; }) => {
+      e.stopPropagation()
       hcEditor.draw(item);
     };
   };
@@ -108,16 +109,21 @@ function StyledTreeItem(props: StyledTreeItemProps) {
                 color="inherit"
                 sx={{ mr: 1 }}
                 onClick={(e: { stopPropagation: () => void }) => {
-                  PubSub.publish("CHANGE_TYPE", "Layer");
+                  e.stopPropagation()
+                  PubSub.publish("CHANGE_TYPE", {type:"Layer", id: currentId});
                 }}
               />
               <Box
                 component={DeleteIcon}
                 color="inherit"
                 sx={{ mr: 1 }}
-                onClick={(e: { stopPropagation: () => void }) => {
-                  e.stopPropagation();
-                  alert(2);
+                onClick={async ( e: { stopPropagation: () => void }) => {
+                  e.stopPropagation()
+                  let b = await VectorLayer.deleteById(item.id)
+                  if(b){
+                    
+                    PubSub.publish('REFRESH_LAYER');
+                  }
                 }}
               />
             </>
@@ -137,13 +143,21 @@ export const LayerTree = () => {
   const [types, setTypes] = useState<TypeProps[]>([]);
 
   const fetchData = useCallback(async () => {
-    let res = await VectorLayer.getAllLayers(),
-      resTypes =  res?.result;
-      resTypes && setTypes([...types, ...resTypes]);
+    let res = await VectorLayer.getAllLayers()
+      res ? setTypes([...types, ...res]) : setTypes([]);
   }, []);
   useEffect(() => {
     fetchData();
   }, [fetchData]);
+
+  useEffect(() => {
+  
+    PubSub.subscribe('REFRESH_LAYER', fetchData);
+    return ()=>{
+      
+      PubSub.unsubscribe('REFRESH_LAYER');
+    }
+  }, []);
   return (
     <TreeView
       aria-label="gmail"

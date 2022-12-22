@@ -41,7 +41,7 @@ export type LayerProps = {
   name: string;
   type: string;
   property: string | PointLayerAttr | PolylineLayerAttr | PolygonLayerAttr;
-  panelField: string | Record<string, unknown>;
+  panelField: string | Record<string, string | number | boolean>[];
   weigh?: number,
   userId?: number,
   adminId?: number,
@@ -54,7 +54,7 @@ export type LayerAttr = {
   id?: string | undefined;
   name: string;
   show: boolean;
-  eleType: string;
+  type: string;
 }
 export type PointLayerAttr = {
   pixelSize: number;

@@ -6,10 +6,21 @@ import AddIcon from '@mui/icons-material/Add';
 import { LayerTree } from './LayerTree';
 import { BaseProperty } from './BaseProperty';
 import { AddLayer } from './AddLayer';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export const Layers = () => {
   const [open, setOpen] = useState(false);
+  const [id, setId] = useState();
+  const mySubscriber = (msg: string, data: any) => {
+    setOpen(true);
+    data['id'] && setId(data['id']);
+  };
+  useEffect(() => {
+    PubSub.subscribe('CHANGE_TYPE', mySubscriber);
+    return () => {
+      PubSub.unsubscribe('CHANGE_TYPE');
+    };
+  }, []);
   return (
     <>
       <Stack
@@ -41,17 +52,18 @@ export const Layers = () => {
             color="inherit"
             sx={{ mr: 1, cursor: 'pointer' }}
             onClick={() => {
+              setId(undefined);
               setOpen(true);
             }}
           />
-          <Box
+          {/* <Box
             component={DeleteIcon}
             color="inherit"
             sx={{ mr: 1, cursor: 'pointer' }}
             onClick={() => {
               alert(3);
             }}
-          />
+          /> */}
         </Stack>
         <Stack
           sx={{
@@ -65,7 +77,7 @@ export const Layers = () => {
             <LayerTree></LayerTree>
           </Box>
         </Stack>
-        <Stack
+        {/* <Stack
           direction="row"
           display="flex"
           justifyContent="center"
@@ -86,13 +98,14 @@ export const Layers = () => {
           <Box sx={{ height: '500px' }}>
             <BaseProperty></BaseProperty>
           </Box>
-        </Stack>
+        </Stack> */}
       </Stack>
       <AddLayer
         open={open}
         close={() => {
           setOpen(false);
         }}
+        id={id}
       ></AddLayer>
     </>
   );
