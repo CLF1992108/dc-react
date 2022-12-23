@@ -68,10 +68,11 @@ export class HcEditor {
     this.viewer.popup.hide()
   }
   draw(parm: TypeProps) {
-    let plot = this.plot
-    plot && plot.draw(parm.eleType, (overlay: DCOverlay) => {
+    let plot = this.plot,
+      type = parm.type === "Point" ? "billboard" : parm.type.toLocaleLowerCase()
+    plot && plot.draw(type, (overlay: DCOverlay) => {
       if (overlay) {
-        let layer = this.layerGroup.getLayer(parm.type)
+        let layer = this.layerGroup.getLayer(parm.id)
         hcOverlay.add(overlay, layer, parm)
       }
     })

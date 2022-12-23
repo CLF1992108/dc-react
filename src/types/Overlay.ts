@@ -3,7 +3,6 @@ export interface TypeProps {
   type: string;
   icon: string;
   name: string;
-  eleType: string;
   checked: boolean;
   color: string;
 }

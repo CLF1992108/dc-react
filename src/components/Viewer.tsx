@@ -22,30 +22,6 @@ export const Viewer: React.FC<ViewerProps> = ({ onViewerCreated }) => {
       hcEditor.init(viewer);
     });
   }, []);
-  const handleChange = (v: string | number) => {
-    let val = typeof v === 'number' ? v : Number(v);
-    hcEditor.Open = false;
-    hcEditor.CurrentModule = val;
-    setValue(val);
-  };
 
-  return (
-    <div className="viewer-container" id="viewer-container">
-      <Box
-        bgcolor="#fff"
-        sx={{
-          position: 'absolute',
-          zIndex: 1,
-          color: '#000',
-        }}
-      >
-        <TabsContainer
-          isRow={true}
-          tabs={tabs}
-          value={value}
-          onChange={handleChange}
-        />
-      </Box>
-    </div>
-  );
+  return <div className="viewer-container" id="viewer-container"></div>;
 };

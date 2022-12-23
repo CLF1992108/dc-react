@@ -8,7 +8,7 @@ module.exports = {
   extends: ['plugin:prettier/recommended', 'plugin:react/recommended'],
   rules: {
     'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
-    'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
+    'no-': process.env.NODE_ENV === 'production' ? 'error' : 'off',
     'global-require': 0,
     //强制使用单引号
     quotes: ['error', 'single'],

@@ -15,6 +15,7 @@ import { ChildrenTree } from "./ChildrenTree";
 import { hcEditor } from "../../store/HcEditor";
 import PubSub from "pubsub-js";
 import { VectorLayer } from "../../core/Layer/VectorLayer";
+import { LayerProps } from "../../api/gisReq";
 
 declare module "react" {
   interface CSSProperties {
@@ -79,6 +80,7 @@ function StyledTreeItem(props: StyledTreeItemProps) {
     ...other
   } = props;
   const handleClick = (item: TypeProps) => {
+    
     return (e: { stopPropagation: () => void; }) => {
       e.stopPropagation()
       hcEditor.draw(item);
@@ -143,8 +145,16 @@ export const LayerTree = () => {
   const [types, setTypes] = useState<TypeProps[]>([]);
 
   const fetchData = useCallback(async () => {
-    let res = await VectorLayer.getAllLayers()
-      res ? setTypes([...types, ...res]) : setTypes([]);
+    let res = await VectorLayer.getAllLayers();
+      if(res){
+        setTypes([...types, ...res])
+        res.forEach((element:LayerProps) => {
+          element.id && hcEditor.createLayer(String(element.id))
+        });
+      }else{
+        setTypes([])
+      };
+    
   }, []);
   useEffect(() => {
     fetchData();
@@ -170,11 +180,11 @@ export const LayerTree = () => {
         <StyledTreeItem
           item={element}
           key={element.id}
-          nodeId={element.id}
+          nodeId={String(element.id)}
           labelText={element.name}
           currentId={currentId}
           onMouseEnter={() => {
-            setCurrentId(element.id);
+            setCurrentId(String(element.id));
           }}
           onMouseLeave={() => {
             setCurrentId("");
@@ -186,7 +196,7 @@ export const LayerTree = () => {
               if (b) {
                 setCurrentId("");
               } else {
-                setCurrentId(element.id);
+                setCurrentId(String(element.id));
               }
             }}
           ></ChildrenTree>

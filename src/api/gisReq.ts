@@ -1,5 +1,5 @@
 import { getReq, IResponseResult, postReq, ResponseStatus } from "../utils/axios";
-import { LayerApi, SceneApi, UploadApi } from ".";
+import { LayerApi, MaterialApi, SceneApi, UploadApi } from ".";
 import { ViewProps } from "../views/Scenes";
 import { Type } from "typescript";
 export type GetResponseDataProps = {
@@ -74,6 +74,28 @@ export type UploadResProps = {
   url: string,
   fullurl: string
 }
+export type MaterialProps = {
+  pid: number,
+  sceneId: number,
+  layerId: number,
+  uuid: string,
+  name: string,
+  type: string,
+  point: string,
+  line: string,
+  plane: string,
+  property: string,
+  status: string
+
+}
+export type UploadMaterialProps = {
+  type: string,
+  uploadType: string,
+  layerId?: number | undefined,
+  layerName: string,
+  file: Blob | null,
+  sceneId: number
+}
 export async function upload(file: File): Promise<UploadResProps | null> {
   const fd = new FormData();
   fd.append("0", "[");
@@ -127,7 +149,6 @@ export async function getLayerList(params: QueryParamProps) {
   }
   return null
 }
-
 export async function addLayer(params: LayerProps) {
   const result = await postReq(LayerApi.add, params)
   return result.code === ResponseStatus.Ok
@@ -140,6 +161,45 @@ export async function delLayer(ids: string) {
   const result = await postReq(LayerApi.del, { ids })
   return result.code === ResponseStatus.Ok
 }
+export async function getMaterialList(params: QueryParamProps) {
+  const result: any = await getReq(MaterialApi.list, { params })
+  if (result.code === ResponseStatus.Ok) {
+    if (result.data) {
+      let data = result.data
+      data["rows"][0].property = data["rows"][0].property && JSON.parse(data["rows"][0].property as string)
+      return data && data["rows"];
+    }
+
+  }
+  return null
+}
+export async function addMaterial(params: MaterialProps) {
+  const result = await postReq(MaterialApi.add, params)
+  return result.code === ResponseStatus.Ok
+}
+export async function editMaterial(ids: number, row: MaterialProps) {
+  const result = await postReq(MaterialApi.edit, { ids, row })
+  return result.code === ResponseStatus.Ok
+}
+export async function delMaterial(ids: string) {
+  const result = await postReq(MaterialApi.del, { ids })
+  return result.code === ResponseStatus.Ok
+}
+export async function uploadMaterial(params: UploadMaterialProps) {
+  const fd = new FormData();
+  fd.append("SceneId", String(params["sceneId"]));
+  params["layerId"] && fd.append("LayerId", String(params["layerId"]));
+  fd.append("LayerName", params["layerName"]);
+  fd.append("Type", params["type"]);
+  fd.append("UploadType", params["uploadType"]);
+  params["file"] && fd.append("file", params["file"]);
+  const result = await postReq(MaterialApi.upload, fd, { headers: { "content-type": "multiparty/form-data" } })
+  return result.code === ResponseStatus.Ok
+}
+
+
+
+
 export async function getGeoJson(type: string) {
   let geojson = {
     "type": "FeatureCollection",
@@ -271,10 +331,9 @@ export async function getTypeList(params: any) {
 
       {
         "id": "1",
-        "type": "type01",
         "icon": "icon1.jpg",
         "name": "高压管段",
-        "eleType": "polyline",
+        "type": "polyline",
         "checked": true,
         "width": 5,
         "color": "rgba(255,0,0, .9)",
@@ -282,57 +341,51 @@ export async function getTypeList(params: any) {
       },
       {
         "id": "2",
-        "type": "type02",
         "icon": "icon2.jpg",
         "name": "中压管段",
-        "eleType": "polyline",
+        "type": "polyline",
         "checked": true,
         "width": 3,
         "color": "rgba(111,22,255,0.8)",
       },
       {
         "id": "3",
-        "type": "type03",
         "icon": "icon3.jpg",
         "name": "低压管段",
-        "eleType": "polyline",
+        "type": "polyline",
         "checked": true,
         "width": 1,
         "color": "rgba(0,255,0, .9)",
       },
       {
         "id": "4",
-        "type": "type04",
         "icon": "icon4.jpg",
         "name": "高危区域",
-        "eleType": "polygon",
+        "type": "polygon",
         "checked": true,
         "color": "rgba(255,0,0, .9)",
       },
       {
         "id": "5",
-        "type": "type05",
         "icon": "icon5.jpg",
         "name": "中危区域",
-        "eleType": "polygon",
+        "type": "polygon",
         "checked": true,
         "color": "rgba(0,0,255, .9)",
       },
       {
         "id": "6",
-        "type": "type06",
         "icon": "icon6.jpg",
         "name": "低危区域",
-        "eleType": "polygon",
+        "type": "polygon",
         "checked": true,
         "color": "rgba(0,255,0, .9)",
       },
       {
         "id": "7",
-        "type": "type07",
         "icon": "http://am-img.gkiiot.com/editor/textures/暖色2.jpg",
         "name": "工业用户",
-        "eleType": "billboard",
+        "type": "billboard",
         "checked": true,
         "width": 5,
         "color": "rgba(0,0,0,1)",
@@ -530,7 +583,7 @@ export async function getOverlaysByLayerId(params: { type: string }) {
     window.localStorage.setItem(params.type, overlays);
   }
   objs = JSON.parse(overlays)
-  // let result: { id: string; type: string; name: string; eleType: string; position: number[]; positions: string; property: Record<string, unknown> }[]
+  // let result: { id: string; type: string; name: string; type: string; position: number[]; positions: string; property: Record<string, unknown> }[]
 
   // if (params.type === "type01") {
   //   result = [
@@ -538,7 +591,7 @@ export async function getOverlaysByLayerId(params: { type: string }) {
   //       "id": "1",
   //       "type": "type01",
   //       "name": "设备2",
-  //       "eleType": "polyline",
+  //       "type": "polyline",
   //       "position": [
   //         111,
   //         26
@@ -554,7 +607,7 @@ export async function getOverlaysByLayerId(params: { type: string }) {
   //       "id": "7",
   //       "type": "type07",
   //       "name": "设备2",
-  //       "eleType": "billboard",
+  //       "type": "billboard",
   //       "position": [
   //         111,
   //         26

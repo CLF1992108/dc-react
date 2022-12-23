@@ -95,15 +95,7 @@ const overlayModels = {
 export const BaseProperty: React.FC<BasePropertyProps> = ({}) => {
   const [opts, setOpts] = useState<PropsOption[]>([]);
   const [mods, setMods] = useState({});
-  const mySubscriber = function (msg: string, data: any) {
-    if (data.type === 'Layer') {
-      setOpts([...layerOpts]);
-      setMods({ ...layerModels });
-    } else {
-      setOpts([...overlayOpts]);
-      setMods({ ...overlayModels });
-    }
-  };
+  const mySubscriber = function (msg: string, data: any) {};
   useEffect(() => {
     PubSub.subscribe('CHANGE_TYPE', mySubscriber);
 

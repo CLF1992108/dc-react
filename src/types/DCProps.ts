@@ -9,7 +9,6 @@ import { Overlay } from "dc";
 //   type: string;
 //   checked: boolean;
 //   contextMenu: []
-
 // }
 export type LayerProps = {
   id: string;
@@ -18,6 +17,5 @@ export type LayerProps = {
   state: string;
   type: string;
   checked: boolean;
-  addOverlay: (overlay: Overlay) => LayerProps
-
+  addOverlay: (overlay: Overlay) => LayerProps;
 }

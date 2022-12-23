@@ -21,11 +21,12 @@ export const LayerApi = {
   add: "/admin/fast-go-gis/app/gis/layer/add",
   edit: "/admin/fast-go-gis/app/gis/layer/edit",
   del: "/admin/fast-go-gis/app/gis/layer/del",
-
 }
 export const MaterialApi = {
   list: "/admin/fast-go-gis/app/gis/material/index",
   add: "/admin/fast-go-gis/app/gis/material/add",
   edit: "/admin/fast-go-gis/app/gis/material/edit",
   del: "/admin/fast-go-gis/app/gis/material/del",
+  detail: "/admin/fast-go-gis/app/gis/material/del",
+  upload: "/admin/fast-go-gis/app/gis/material/upload"
 }

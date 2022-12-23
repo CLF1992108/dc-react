@@ -11,7 +11,7 @@ export class Layer {
   name: string;
   type: string;
   property: string | PointLayerAttr | PolylineLayerAttr | PolygonLayerAttr;
-  panelField: string | Record<string, unknown>;
+  panelField: string | Record<string, string | number | boolean>[];
   layer
   constructor(params: LayerProps) {
     this.layer = new DC.Layer()

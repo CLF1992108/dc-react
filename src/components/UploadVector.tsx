@@ -16,6 +16,7 @@ import { useCallback, useState } from 'react';
 import { DraggableDialog } from './common/DraggableDialog';
 import { Upload } from './common/Upload';
 import { styled } from '@mui/material/styles';
+import { uploadMaterial, UploadMaterialProps } from '../api/gisReq';
 const BootstrapInput = styled(InputBase)(({ theme }) => ({
   'label + &': {
     marginTop: theme.spacing(3),
@@ -53,25 +54,34 @@ export interface UploadVectorProps {
   open: boolean;
   close: () => void;
 }
-const initDataForm = {
-  eleType: 'point',
-  importType: 0,
-  typeId: 0,
-  typeName: '我的图层',
+
+const initDataForm: UploadMaterialProps = {
+  type: 'point',
+  uploadType: "新建",
+  layerId: undefined,
+  layerName: '我的图层',
   file: null,
+  sceneId: 1
 };
 export const UploadVector: React.FC<UploadVectorProps> = ({ open, close }) => {
   const [dataForm, setDataForm] = useState(initDataForm);
   const onDrop = useCallback((acceptedFiles: any) => {
     // Do something with the files
-  }, []);
+    let params = {...dataForm}
+    params.file = acceptedFiles[0]
+    uploadMaterial(params)
+  }, [dataForm]);
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    debugger
     dataForm[e.target['name']] = e.target['value'];
     setDataForm({ ...dataForm });
   };
   const handleSelectChange = (e: SelectChangeEvent<number>) => {
-    dataForm.typeId = e.target.value as number;
-    setDataForm({ ...dataForm });
+    if(dataForm.uploadType !== "新建"){
+      dataForm.layerId = e.target.value as number;
+      setDataForm({ ...dataForm });
+    }
+    
   };
   return (
     <DraggableDialog open={open} close={close} confirm={close} title="上传">
@@ -80,9 +90,9 @@ export const UploadVector: React.FC<UploadVectorProps> = ({ open, close }) => {
           <FormLabel component="legend">数据类型</FormLabel>
           <RadioGroup
             row
-            aria-label="eleType"
-            name="eleType"
-            value={dataForm.eleType}
+            aria-label="type"
+            name="type"
+            value={dataForm.type}
             onChange={handleChange}
           >
             <FormControlLabel value="point" control={<Radio />} label="点" />
@@ -96,23 +106,23 @@ export const UploadVector: React.FC<UploadVectorProps> = ({ open, close }) => {
           <FormLabel component="legend">导入类型</FormLabel>
           <RadioGroup
             row
-            aria-label="importType"
-            name="importType"
-            value={dataForm.importType}
+            aria-label="uploadType"
+            name="uploadType"
+            value={dataForm.uploadType}
             onChange={handleChange}
           >
-            <FormControlLabel value={0} control={<Radio />} label="新建" />
-            <FormControlLabel value={1} control={<Radio />} label="覆盖" />
-            <FormControlLabel value={2} control={<Radio />} label="追加" />
+            <FormControlLabel value="新建" control={<Radio />} label="新建" />
+            <FormControlLabel value="覆盖" control={<Radio />} label="覆盖" />
+            <FormControlLabel value="追加" control={<Radio />} label="追加" />
           </RadioGroup>
         </FormControl>
       </Box>
       <Box sx={{ pb: 1 }}>
         <FormControl component="fieldset">
           <FormLabel component="legend">图层类型</FormLabel>
-          {dataForm.importType == 0 && (
+          {dataForm.uploadType == "新建" && (
             <TextField
-              name="typeName"
+              name="layerName"
               sx={{
                 color: '#fff',
                 bgcolor: '#fff',
@@ -121,15 +131,15 @@ export const UploadVector: React.FC<UploadVectorProps> = ({ open, close }) => {
                   p: '5px 14px',
                 },
               }}
-              value={dataForm.typeName}
+              value={dataForm.layerName}
               onChange={handleChange}
             ></TextField>
           )}
-          {dataForm.importType != 0 && (
+          {dataForm.uploadType != "新建" && (
             <Select
               labelId="demo-customized-select-label"
               id="demo-customized-select"
-              value={dataForm.typeId}
+              value={dataForm.layerId}
               onChange={handleSelectChange}
               input={<BootstrapInput />}
             >

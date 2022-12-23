@@ -141,12 +141,12 @@ export const ChildrenTree = (props: {
           <StyledTreeItem
             item={ele}
             key={ele['id']}
-            nodeId={ele['id']}
+            nodeId={String(ele['id'])}
             labelText={ele['name']}
-            currentId={currentId}
+            currentId={String(currentId)}
             onMouseEnter={() => {
               setParentId(true);
-              setCurrentId(ele['id']);
+              setCurrentId(String(ele['id']));
             }}
             onMouseLeave={() => {
               setParentId(false);

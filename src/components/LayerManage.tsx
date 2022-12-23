@@ -28,19 +28,19 @@ const LayerManage: React.FC<LayerManageProps> = ({}) => {
     let res = await getOverlaysByLayerId(params);
     res.forEach((element: any) => {
       let overlay: any;
-      if (element.eleType === 'billboard') {
+      if (element.type === 'billboard') {
         let position = new DC.Position(
           element.position['lng'],
           element.position['lat']
         );
         overlay = new DC.Billboard(position, layer.attr.icon);
-      } else if (element.eleType === 'polyline') {
+      } else if (element.type === 'polyline') {
         overlay = new DC.Polyline(element.positions);
         overlay.setStyle({
           width: layer.attr.width,
           material: new Cesium.Color.fromCssColorString(layer.attr.color), //颜色
         });
-      } else if (element.eleType === 'polygon') {
+      } else if (element.type === 'polygon') {
         overlay = new DC.Polygon(element.positions);
         overlay.setStyle({
           material: new Cesium.Color.fromCssColorString(layer.attr.color), //颜色

@@ -1,4 +1,4 @@
-import { addOverlay, deleteOverlay, updateOverlay } from "../api/gisReq";
+import { addMaterial, deleteOverlay, updateOverlay } from "../api/gisReq";
 import { hcEditor } from "../store/HcEditor";
 import { TypeProps } from "../types/Overlay";
 import PubSub from 'pubsub-js'
@@ -14,7 +14,7 @@ class HcOverlay {
   async add(overlay: any, layer: any, parm: TypeProps) {
     let plot = hcEditor.Plot
     this.setOverlayAttr(overlay, parm)
-    let id = await addOverlay(overlay.attr)
+    let id = await addMaterial(overlay.attr)
     if (!id) {
       return alert("添加失败")
     }
@@ -51,12 +51,15 @@ class HcOverlay {
   }
   setOverlayAttr(overlay: any, parm: TypeProps) {
     overlay.attr = {
-      type: parm.type,
-      name: parm.name,
-      eleType: parm.eleType,
-      position: overlay.position,
-      positions: overlay.positions,
-      property: {}
+      "pid": 0,
+      "sceneId": 1,
+      "layerId": 76,
+      "name": "1111",
+      "type": "point",
+      "point": [100, 26, 1],
+      "line": "",
+      "plane": "",
+      "property": "",
     }
   }
 
