@@ -105,7 +105,10 @@ function StyledTreeItem(props: StyledTreeItemProps) {
                 sx={{ mr: 1 }}
                 onClick={(e: { stopPropagation: () => void }) => {
                   e.stopPropagation();
-                  alert(2);
+                  PubSub.publish('MSG', {
+                    severity: 'error',
+                    content: '删除',
+                  });
                 }}
               />
             </>

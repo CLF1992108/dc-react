@@ -2,6 +2,7 @@ import { addMaterial, deleteOverlay, updateOverlay } from "../api/gisReq";
 import { hcEditor } from "../store/HcEditor";
 import { TypeProps } from "../types/Overlay";
 import PubSub from 'pubsub-js'
+import { Public } from "@mui/icons-material";
 class HcOverlay {
   constructor() {
     let mySubscriber = function (msg: string, data: any) {
@@ -16,7 +17,10 @@ class HcOverlay {
     this.setOverlayAttr(overlay, parm)
     let id = await addMaterial(overlay.attr)
     if (!id) {
-      return alert("添加失败")
+      return PubSub.publish("MSG", {
+        severity: "error",
+        content: "添加失败"
+      })
     }
     overlay.attr.id = id
     console.log(overlay.attr.id)

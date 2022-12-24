@@ -54,9 +54,15 @@ export const Scenes = () => {
       if (scene) {
         let res = await scene.saveScene();
         if(res){
-          alert("保存成功")
+          PubSub.publish("MSG", {
+            severity: "success",
+            content: "保存成功"
+          })
         } else{
-          alert("保存失败")
+          PubSub.publish("MSG", {
+            severity: "error",
+            content: "保存失败"
+          })
         }
       }
     }

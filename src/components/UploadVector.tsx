@@ -68,11 +68,25 @@ const initDataForm: UploadMaterialProps = {
 export const UploadVector: React.FC<UploadVectorProps> = ({ open, close }) => {
   const [dataForm, setDataForm] = useState(initDataForm);
   const [types, setTypes] = useState<TypeProps[]>([]);
-  const onDrop = useCallback((acceptedFiles: any) => {
+  const onDrop = useCallback(async(acceptedFiles: any) => {
     // Do something with the files
     let params = {...dataForm}
     params.file = acceptedFiles[0]
-    uploadMaterial(params)
+    let b = await uploadMaterial(params)
+    if(b){
+      PubSub.publish("MSG", {
+        severity: "success",
+        content: "上传成功"
+      })
+      close()
+      PubSub.publish('REFRESH_LAYER');
+    }else{
+      PubSub.publish("MSG", {
+        severity: "error",
+        content: "上传失败"
+      })
+    }
+    
   }, [dataForm]);
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     
@@ -99,7 +113,7 @@ export const UploadVector: React.FC<UploadVectorProps> = ({ open, close }) => {
     fetchData()
   },[])
   return (
-    <DraggableDialog open={open} close={close} confirm={close} title="上传">
+    <DraggableDialog open={open} close={close} confirm={close} title="上传" cancelButton={false} confirmButton={false}>
       <Box>
         <FormControl component="fieldset">
           <FormLabel component="legend">数据类型</FormLabel>

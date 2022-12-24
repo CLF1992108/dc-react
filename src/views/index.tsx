@@ -1,6 +1,7 @@
-import { Box, Toolbar } from '@mui/material';
+import { Box } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { HDrawer } from '../components/common/HDrawer';
+import { Msg } from '../components/common/Msg';
 import ResponsiveAppBar from '../components/ResponsiveAppBar';
 import { Viewer } from '../components/Viewer';
 import HcViewer from '../core/HcViewer';
@@ -122,6 +123,7 @@ const App: React.FC<AppProps> = (AppProps) => {
       >
         <Viewer onViewerCreated={_onViewerCreated} />
       </div>
+      <Msg></Msg>
     </>
   );
 };
