@@ -12,11 +12,13 @@ import {
   SelectChangeEvent,
 } from '@mui/material';
 import * as React from 'react';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { DraggableDialog } from './common/DraggableDialog';
 import { Upload } from './common/Upload';
 import { styled } from '@mui/material/styles';
-import { uploadMaterial, UploadMaterialProps } from '../api/gisReq';
+import { LayerProps, uploadMaterial, UploadMaterialProps } from '../api/gisReq';
+import { TypeProps } from '../types/Overlay';
+import { VectorLayer } from '../core/Layer/VectorLayer';
 const BootstrapInput = styled(InputBase)(({ theme }) => ({
   'label + &': {
     marginTop: theme.spacing(3),
@@ -65,6 +67,7 @@ const initDataForm: UploadMaterialProps = {
 };
 export const UploadVector: React.FC<UploadVectorProps> = ({ open, close }) => {
   const [dataForm, setDataForm] = useState(initDataForm);
+  const [types, setTypes] = useState<TypeProps[]>([]);
   const onDrop = useCallback((acceptedFiles: any) => {
     // Do something with the files
     let params = {...dataForm}
@@ -72,17 +75,29 @@ export const UploadVector: React.FC<UploadVectorProps> = ({ open, close }) => {
     uploadMaterial(params)
   }, [dataForm]);
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    debugger
+    
     dataForm[e.target['name']] = e.target['value'];
     setDataForm({ ...dataForm });
   };
   const handleSelectChange = (e: SelectChangeEvent<number>) => {
-    if(dataForm.uploadType !== "新建"){
+    
       dataForm.layerId = e.target.value as number;
       setDataForm({ ...dataForm });
-    }
-    
   };
+  
+
+  const fetchData = useCallback(async () => {
+    let res = await VectorLayer.getAllLayers();
+      if(res){
+        setTypes([...types, ...res])
+      }else{
+        setTypes([])
+      };
+    
+  }, []);
+  useEffect(()=>{
+    fetchData()
+  },[])
   return (
     <DraggableDialog open={open} close={close} confirm={close} title="上传">
       <Box>
@@ -143,12 +158,7 @@ export const UploadVector: React.FC<UploadVectorProps> = ({ open, close }) => {
               onChange={handleSelectChange}
               input={<BootstrapInput />}
             >
-              <MenuItem value={0}>
-                <em>None</em>
-              </MenuItem>
-              <MenuItem value={10}>Ten</MenuItem>
-              <MenuItem value={20}>Twenty</MenuItem>
-              <MenuItem value={30}>Thirty</MenuItem>
+              {types.map((type)=><MenuItem key={type.id} value={type.id}>{type.name}</MenuItem>)}
             </Select>
           )}
         </FormControl>
