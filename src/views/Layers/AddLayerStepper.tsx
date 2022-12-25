@@ -6,14 +6,15 @@ import StepLabel from '@mui/material/StepLabel';
 import Button from '@mui/material/Button';
 import { PropertyPanel } from '@haichuang/components';
 import { ReactNode, useCallback, useEffect, useState } from 'react';
-import { FormControl, Input, List, ListItem, MenuItem, Select, Stack, SxProps } from '@mui/material';
-import { addLayer, editLayer, LayerProps, PointLayerAttr, PolygonLayerAttr, PolylineLayerAttr } from '../../api/gisReq';
+import { FormControl, IconButton, Input, List, ListItem, MenuItem, Select, Stack, SxProps, TextField } from '@mui/material';
+import { addLayer, editLayer, LayerProps, PointLayerAttr, PolygonLayerAttr, PolylineLayerAttr, upload } from '../../api/gisReq';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 const steps = ['设置基础属性', '设置自定义属性'];
 import { HCInput } from '@haichuang/components';
 import { urlSearch } from '../../utils/util';
 import { VectorLayer } from '../../core/Layer/VectorLayer';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 type TFormValues = Record<string, unknown>;
 type SelectProps = {
   key: string | number,
@@ -133,13 +134,40 @@ const initBaseOptions = [
   },
   
 ];
+const uploadImg = async (e:any)=>{
+  debugger
+    console.log(e.target.files[0])
+    let urlRes = await upload(e.target.files[0])
+    return urlRes
+}
 const basePointOptions = [
   {
     key: 'icon',
-    type: 'String',
+    type: 'Custom',
     label: '图标',
     name: 'icon',
     disabled: false,
+    customRender: (item:any, values:any, changeValue:any) => (
+      <>
+        <IconButton sx={{height:"35px", width:"35px" }} color="primary" aria-label="upload picture" component="label">
+          <input hidden accept="image/*" type="file" onChange={async (e:any) => {
+            
+            let url = await uploadImg(e), val;
+            if(url){
+              val = "http://192.168.18.142:8201" + url?.url
+              changeValue("icon", val)
+            }
+            
+          }}/>
+          {values.icon ? <img src={values.icon} width="35px" height="35px"></img> : <CloudUploadIcon />}
+        </IconButton>
+      </>
+      // <TextField
+      //   name={item.name}
+      //   value={values[item.name]}
+      //   onChange={(e:any) => changeValue(e.target.name, e.target.value)}
+      // />
+    ),
   },
   {
     key: 'pixelSize',
@@ -152,7 +180,7 @@ const basePointOptions = [
 const basePolylineOptions = [
   {
     key: 'meterial',
-    type: 'String',
+    type: 'Color',
     label: '颜色',
     name: 'meterial',
     disabled: false,
@@ -168,7 +196,7 @@ const basePolylineOptions = [
 const basePolygonOptions = [
   {
     key: 'meterial',
-    type: 'String',
+    type: 'Color',
     label: '颜色',
     name: 'meterial',
     disabled: false,
@@ -182,7 +210,7 @@ const basePolygonOptions = [
   },
   {
     key: 'outlineColor',
-    type: 'String',
+    type: 'Color',
     label: '边框颜色',
     name: 'outlineColor',
     disabled: false,
@@ -252,7 +280,7 @@ export const AddLayerStepper: React.FC<AddLayerStepperProps> = ({close, id}) => 
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
-  const onBaseValuesChange = (changeVal: TFormValues, allVal: TFormValues) => {
+  const onBaseValuesChange =  (changeVal: TFormValues, allVal: TFormValues) => {
     
     let m =  allVal as PointLayerAttr | PolylineLayerAttr | PolygonLayerAttr
     m && setBaseModels({ ...m });

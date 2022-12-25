@@ -17,6 +17,7 @@ export const Layers = () => {
   };
   useEffect(() => {
     PubSub.subscribe('CHANGE_TYPE', mySubscriber);
+
     return () => {
       PubSub.unsubscribe('CHANGE_TYPE');
     };

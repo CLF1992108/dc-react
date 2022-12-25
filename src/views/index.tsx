@@ -86,8 +86,15 @@ const App: React.FC<AppProps> = (AppProps) => {
   };
   useEffect(() => {
     PubSub.subscribe('VIEW', mySubscriber);
+    PubSub.subscribe('SAVE', () => {
+      PubSub.publish('MSG', {
+        severity: 'success',
+        content: '保存成功',
+      });
+    });
     return () => {
       PubSub.unsubscribe('VIEW');
+      PubSub.unsubscribe('SAVE');
     };
   }, []);
 

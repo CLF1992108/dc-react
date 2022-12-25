@@ -81,7 +81,6 @@ export const Scenes = () => {
   useEffect(() => {
     getInstance();
     return () => {
-      PubSub.unsubscribe('SAVE');
     };
   }, []);
   return (
