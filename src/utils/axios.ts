@@ -32,7 +32,7 @@ export const myAxios = axios.create({
 myAxios.interceptors.request.use(
   (config) => {
     if (config.headers) {
-      config.headers["Authorization"] = "admin:1:ed6prj0dmk0cpau9sbdcpyg90064q8iq";
+      config.headers["Authorization"] = "admin:1:ed6prj0dmk0cpbc00u4savwa00lq1nrc";
     }
 
     return config;

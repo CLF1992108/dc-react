@@ -124,19 +124,26 @@ function StyledTreeItem(props: StyledTreeItemProps) {
   );
 }
 export const ChildrenTree = (props: {
-  type: string,
+  layerId: string,
   setParentId: (v: boolean) => void,
 }) => {
+  const { layerId, setParentId } = props;
   const [currentId, setCurrentId] = useState('');
-  const { type, setParentId } = props;
   const [overlays, setOverlays] = useState<any[]>([]);
   const fetchData = useCallback(async () => {
-    let overlays1 = await getOverlaysByLayerId({ type });
+    let overlays1 = await getOverlaysByLayerId({ layerId: String(layerId) });
+    console.log(overlays1);
     setOverlays([...overlays1]);
   }, []);
   useEffect(() => {
     fetchData();
   }, [fetchData]);
+  useEffect(() => {
+    PubSub.subscribe('REFRESH_OVERLAY', fetchData);
+    return () => {
+      PubSub.unsubscribe('REFRESH_OVERLAY');
+    };
+  }, []);
   return (
     <>
       {overlays.map((ele) => {

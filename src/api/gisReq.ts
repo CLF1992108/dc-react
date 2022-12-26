@@ -1,7 +1,6 @@
 import { getReq, IResponseResult, postReq, ResponseStatus } from "../utils/axios";
 import { LayerApi, MaterialApi, SceneApi, UploadApi } from ".";
 import { ViewProps } from "../views/Scenes";
-import { Type } from "typescript";
 export type GetResponseDataProps = {
   rows: [],
   total: number
@@ -75,7 +74,8 @@ export type UploadResProps = {
   fullurl: string
 }
 export type MaterialProps = {
-  pid: number,
+  id?: number,
+  pid?: number,
   sceneId: number,
   layerId: number,
   uuid: string,
@@ -85,7 +85,14 @@ export type MaterialProps = {
   line: string,
   plane: string,
   property: string,
-  status: string
+  panelVal: string,
+  weigh?: 0,
+  userId?: 0,
+  adminId?: 0,
+  tenantId?: 0,
+  createdAt?: string,
+  updatedAt?: string,
+  status?: string
 
 }
 export type UploadMaterialProps = {
@@ -176,6 +183,18 @@ export async function getMaterialList(params: QueryParamProps) {
 export async function addMaterial(params: MaterialProps) {
   const result = await postReq(MaterialApi.add, params)
   return result.code === ResponseStatus.Ok
+}
+export async function addMaterialLocal(params: MaterialProps) {
+
+  let overlays = window.localStorage.getItem(String(params.layerId))
+  let objs
+  objs = overlays !== null && JSON.parse(overlays)
+  params.id = DC.Util.uuid()
+  objs.push(params)
+  var reg2 = new RegExp("_", "g"); // 不加'g'，仅删除字符串里第一个"a"
+  var a2 = JSON.stringify(objs).replace(reg2, "");
+  window.localStorage.setItem(String(params.layerId), a2);
+  return params.id
 }
 export async function editMaterial(ids: number, row: MaterialProps) {
   const result = await postReq(MaterialApi.edit, { ids, row })
@@ -575,12 +594,12 @@ export async function getPropsListByType(params: { type: String }) {
   }
   return result;
 }
-export async function getOverlaysByLayerId(params: { type: string }) {
-  let overlays = window.localStorage.getItem(params.type)
+export async function getOverlaysByLayerId(params: { layerId: string }) {
+  let overlays = window.localStorage.getItem(params.layerId)
   let objs: Record<string, any>[] = []
   if (!overlays) {
     overlays = "[]"
-    window.localStorage.setItem(params.type, overlays);
+    window.localStorage.setItem(params.layerId, overlays);
   }
   objs = JSON.parse(overlays)
   // let result: { id: string; type: string; name: string; type: string; position: number[]; positions: string; property: Record<string, unknown> }[]

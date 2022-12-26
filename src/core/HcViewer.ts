@@ -4,8 +4,6 @@ import { MapOptions } from "./type"
 class HcViewer {
   private viewer
   constructor(viewer: DCViewer) {
-    console.log(DC.Viewer)
-    // console.log(DCViewer)
     this.viewer = viewer
   }
   set Viewer(v) {

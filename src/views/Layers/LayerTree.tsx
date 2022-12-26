@@ -10,7 +10,6 @@ import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import EditIcon from "@mui/icons-material/Edit";
 import AddIcon from "@mui/icons-material/Add";
 import { useEffect, useState, useCallback } from "react";
-import { TypeProps } from "../../types/Overlay";
 import { ChildrenTree } from "./ChildrenTree";
 import { hcEditor } from "../../store/HcEditor";
 import PubSub from "pubsub-js";
@@ -32,7 +31,7 @@ type StyledTreeItemProps = TreeItemProps & {
   labelInfo?: string;
   labelText: string;
   currentId: string;
-  item: TypeProps;
+  item: LayerProps;
 };
 
 const StyledTreeItemRoot = styled(TreeItem)(({ theme }) => ({
@@ -79,7 +78,7 @@ function StyledTreeItem(props: StyledTreeItemProps) {
     currentId,
     ...other
   } = props;
-  const handleClick = (item: TypeProps) => {
+  const handleClick = (item: LayerProps) => {
     
     return (e: { stopPropagation: () => void; }) => {
       e.stopPropagation()
@@ -121,9 +120,8 @@ function StyledTreeItem(props: StyledTreeItemProps) {
                 sx={{ mr: 1 }}
                 onClick={async ( e: { stopPropagation: () => void }) => {
                   e.stopPropagation()
-                  let b = await VectorLayer.deleteById(item.id)
+                  let b = await VectorLayer.deleteById(String(item.id))
                   if(b){
-                    
                     PubSub.publish('REFRESH_LAYER');
                   }
                 }}
@@ -142,17 +140,17 @@ function StyledTreeItem(props: StyledTreeItemProps) {
 }
 export const LayerTree = () => {
   const [currentId, setCurrentId] = useState("");
-  const [types, setTypes] = useState<TypeProps[]>([]);
+  const [layers, setLayers] = useState<LayerProps[]>([]);
 
   const fetchData = useCallback(async () => {
     let res = await VectorLayer.getAllLayers();
       if(res){
-        setTypes([...types, ...res])
+        setLayers([...layers, ...res])
         res.forEach((element:LayerProps) => {
           element.id && hcEditor.createLayer(String(element.id))
         });
       }else{
-        setTypes([])
+        setLayers([])
       };
     
   }, []);
@@ -176,7 +174,7 @@ export const LayerTree = () => {
       defaultExpandIcon={<ArrowRightIcon />}
       defaultEndIcon={<div style={{ width: 24 }} />}
     >
-      {types.map((element) => (
+      {layers.map((element) => (
         <StyledTreeItem
           item={element}
           key={element.id}
@@ -191,7 +189,7 @@ export const LayerTree = () => {
           }}
         >
           <ChildrenTree
-            type={element.type}
+            layerId={String(element.id)}
             setParentId={(b) => {
               if (b) {
                 setCurrentId("");

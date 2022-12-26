@@ -1,7 +1,7 @@
 import { LayerGroup as DCLayerGroup, Overlay as DCOverlay, Plot, Viewer as DCViewer } from "dc";
 import { makeAutoObservable } from "mobx"
+import { LayerProps } from "../api/gisReq";
 import { hcOverlay } from "../core/HcOverlay";
-import { TypeProps } from "../types/Overlay";
 export class HcEditor {
   private viewer!: DCViewer;
   private layerGroup!: DCLayerGroup;
@@ -67,12 +67,12 @@ export class HcEditor {
   popupHide() {
     this.viewer.popup.hide()
   }
-  draw(parm: TypeProps) {
+  draw(parm: LayerProps) {
     let plot = this.plot,
       type = parm.type === "Point" ? "billboard" : parm.type.toLocaleLowerCase()
     plot && plot.draw(type, (overlay: DCOverlay) => {
       if (overlay) {
-        let layer = this.layerGroup.getLayer(parm.id)
+        let layer = this.layerGroup.getLayer(String(parm.id))
         hcOverlay.add(overlay, layer, parm)
       }
     })

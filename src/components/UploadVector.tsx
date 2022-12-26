@@ -17,7 +17,6 @@ import { DraggableDialog } from './common/DraggableDialog';
 import { Upload } from './common/Upload';
 import { styled } from '@mui/material/styles';
 import { LayerProps, uploadMaterial, UploadMaterialProps } from '../api/gisReq';
-import { TypeProps } from '../types/Overlay';
 import { VectorLayer } from '../core/Layer/VectorLayer';
 const BootstrapInput = styled(InputBase)(({ theme }) => ({
   'label + &': {
@@ -67,7 +66,7 @@ const initDataForm: UploadMaterialProps = {
 };
 export const UploadVector: React.FC<UploadVectorProps> = ({ open, close }) => {
   const [dataForm, setDataForm] = useState(initDataForm);
-  const [types, setTypes] = useState<TypeProps[]>([]);
+  const [layers, setLayers] = useState<LayerProps[]>([]);
   const onDrop = useCallback(async(acceptedFiles: any) => {
     // Do something with the files
     let params = {...dataForm}
@@ -103,9 +102,9 @@ export const UploadVector: React.FC<UploadVectorProps> = ({ open, close }) => {
   const fetchData = useCallback(async () => {
     let res = await VectorLayer.getAllLayers();
       if(res){
-        setTypes([...types, ...res])
+        setLayers([...layers, ...res])
       }else{
-        setTypes([])
+        setLayers([])
       };
     
   }, []);
@@ -172,7 +171,7 @@ export const UploadVector: React.FC<UploadVectorProps> = ({ open, close }) => {
               onChange={handleSelectChange}
               input={<BootstrapInput />}
             >
-              {types.map((type)=><MenuItem key={type.id} value={type.id}>{type.name}</MenuItem>)}
+              {layers.map((type)=><MenuItem key={type.id} value={type.id}>{type.name}</MenuItem>)}
             </Select>
           )}
         </FormControl>

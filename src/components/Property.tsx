@@ -1,14 +1,14 @@
-import React, { ReactNode, useCallback, useEffect, useState } from "react";
-import { PropertyPanel } from "@haichuang/components";
-import { Box, Button, Divider, Grid, makeStyles, SxProps } from "@mui/material";
-import { reaction } from "mobx";
-import { hcEditor } from "../store/HcEditor";
-import { getPropsListByType } from "../api/gisReq";
+import React, { ReactNode, useCallback, useEffect, useState } from 'react';
+import { PropertyPanel } from '@haichuang/components';
+import { Box, Button, Divider, Grid, makeStyles, SxProps } from '@mui/material';
+import { reaction } from 'mobx';
+import { hcEditor } from '../store/HcEditor';
+import { getPropsListByType } from '../api/gisReq';
 type TFormValues = Record<string, unknown>;
 type SelectProps = {
-  key: string | number;
-  value: string;
-  label: string;
+  key: string | number,
+  value: string,
+  label: string,
 };
 export interface PropsOption {
   key: string | number;
@@ -30,13 +30,13 @@ export interface PropsOption {
   props?: Record<string, any>;
 }
 type RulesProp = {
-  required?: boolean; // 是否必选
-  type?: string; // 校验类型
-  message?: string; // 校验文案
-  len?: number; // 字段长度
-  pattern?: RegExp; // 正则表达式
-  min?: number; // 最小值
-  max?: number; // 最大值
+  required?: boolean, // 是否必选
+  type?: string, // 校验类型
+  message?: string, // 校验文案
+  len?: number, // 字段长度
+  pattern?: RegExp, // 正则表达式
+  min?: number, // 最小值
+  max?: number, // 最大值
 };
 interface PropertyPanelProps {
   options: Array<PropsOption>;
@@ -69,7 +69,7 @@ const Property: React.FC<GisPropertyPanelProps> = ({
   onCancel,
   onDelete,
 }) => {
-  const [title, setTitle] = useState("");
+  const [title, setTitle] = useState('');
   const [opts, setOpts] = useState<PropsOption[]>([]);
   const [mods, setMods] = useState(models);
   const onValuesChange = (
@@ -128,7 +128,7 @@ const Property: React.FC<GisPropertyPanelProps> = ({
     const res: PropsOption[] = propsListByType.result;
     let temps: PropsOption[] = [];
     temps = res.map((ele: PropsOption) => {
-      if (hcEditor.CurrentModule === 0) {
+      if (hcEditor.CurrentModule === 1) {
         ele.disabled = true;
       } else {
         ele.disabled = false;
@@ -136,7 +136,6 @@ const Property: React.FC<GisPropertyPanelProps> = ({
       return ele;
     });
     setOpts(temps);
-    console.log(hcEditor, hcEditor.CurrentOverlay.attr.property);
     setMods(hcEditor.CurrentOverlay.attr.property);
     setTitle(hcEditor.CurrentOverlay?.attr.name);
   }, []);
@@ -159,13 +158,13 @@ const Property: React.FC<GisPropertyPanelProps> = ({
     <Box>
       {header()}
       <Divider light sx={{ mt: 1, mb: 1 }} />
-      <Box sx={{ maxHeight: 250, overflow: "auto" }}>
+      <Box sx={{ maxHeight: 250, overflow: 'auto' }}>
         <PropertyPanel
           sx={{
-            overflowX: "auto",
+            overflowX: 'auto',
             width: 280,
             p: 1,
-            "& .css-1xx1wee-MuiFormLabel-root": { padding: "0 8px 0 0" },
+            '& .css-1xx1wee-MuiFormLabel-root': { padding: '0 8px 0 0' },
           }}
           options={opts}
           models={mods}
