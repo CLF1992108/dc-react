@@ -96,6 +96,10 @@ export class VectorLayer {
     let res = await getLayerList({ filter: JSON.stringify(filter) })
     return res
   }
+  static async getLayersByFilter(filter: any) {
+    let res = await getLayerList({ filter: JSON.stringify(filter) })
+    return res
+  }
   static async getAllLayers() {
     let res = await getLayerList({})
     console.log(res)

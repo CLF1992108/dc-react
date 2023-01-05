@@ -74,7 +74,7 @@ export class Scene {
     file = dataURLtoFile(img.src, name)
     urlRes = await upload(file)
     if (urlRes) {
-      url = "http://192.168.18.142:8201" + urlRes.url
+      url = ASSET_URL + urlRes.url
     }
     return url
   }

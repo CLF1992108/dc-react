@@ -100,17 +100,18 @@ export const UploadVector: React.FC<UploadVectorProps> = ({ open, close }) => {
   
 
   const fetchData = useCallback(async () => {
-    let res = await VectorLayer.getAllLayers();
+    const filter = { type: dataForm.type}
+    let res = await VectorLayer.getLayersByFilter(filter);
       if(res){
-        setLayers([...layers, ...res])
+        setLayers([...res])
       }else{
         setLayers([])
       };
     
-  }, []);
+  }, [dataForm.type]);
   useEffect(()=>{
     fetchData()
-  },[])
+  },[dataForm.type])
   return (
     <DraggableDialog open={open} close={close} confirm={close} title="上传" cancelButton={false} confirmButton={false}>
       <Box>

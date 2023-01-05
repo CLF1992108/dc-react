@@ -3,7 +3,7 @@ import { PropertyPanel } from '@haichuang/components';
 import { Box, Button, Divider, Grid, makeStyles, SxProps } from '@mui/material';
 import { reaction } from 'mobx';
 import { hcEditor } from '../store/HcEditor';
-import { getPropsListByType } from '../api/gisReq';
+import { getMaterialDetail } from '../api/gisReq';
 type TFormValues = Record<string, unknown>;
 type SelectProps = {
   key: string | number,
@@ -122,22 +122,18 @@ const Property: React.FC<GisPropertyPanelProps> = ({
     return <Box>{title}</Box>;
   };
   let setPanelCallback = useCallback(async () => {
-    const params = { type: hcEditor.CurrentOverlay?.type };
-    let propsListByType = await getPropsListByType(params);
-    //@ts-ignore
-    const res: PropsOption[] = propsListByType.result;
-    let temps: PropsOption[] = [];
-    temps = res.map((ele: PropsOption) => {
-      if (hcEditor.CurrentModule === 1) {
-        ele.disabled = true;
-      } else {
-        ele.disabled = false;
-      }
-      return ele;
-    });
-    setOpts(temps);
-    setMods(hcEditor.CurrentOverlay.attr.property);
-    setTitle(hcEditor.CurrentOverlay?.attr.name);
+    console.log(hcEditor.CurrentOverlay.attr.id);
+    let res = await getMaterialDetail(hcEditor.CurrentOverlay.attr.id);
+    let f = res[0].panelField;
+    setOpts([...f]);
+    setMods(res[0].panelVal);
+    // setMods({
+    //   'D-92D4C5A5-395B-4667-AAE0-5C2C3EEA617D': 11,
+    //   'D-1C9C91AA-75B0-43CE-86FF-1B66F1D54C5E': 22,
+    //   'D-D9EACAAC-729A-41F8-BF59-945BCB2CA446': 3,
+    // });
+
+    setTitle(res[0].name);
   }, []);
 
   useEffect(() => {

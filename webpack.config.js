@@ -18,7 +18,7 @@ module.exports = (env, argv) => {
     output: {
       filename: '[name].bundle.js',
       path: path.resolve(__dirname, 'dist'),
-      publicPath: IS_PROD ? '/' : '/',
+      publicPath: IS_PROD ? './' : '/',
     },
     devtool: IS_PROD ? false : 'cheap-module-source-map',
     devServer: {
@@ -32,6 +32,13 @@ module.exports = (env, argv) => {
           },
         },
         '/admin/ajax/': {
+          target: 'http://192.168.18.142:8201', //请求本地 
+          secure: false,
+          pathRewrite: {
+            '^': ''
+          },
+        },
+        '/uploads/': {
           target: 'http://192.168.18.142:8201', //请求本地 
           secure: false,
           pathRewrite: {
@@ -148,6 +155,7 @@ module.exports = (env, argv) => {
         template: path.resolve(__dirname, 'public/index.html'),
       }),
       new webpack.DefinePlugin({
+        ASSET_URL: JSON.stringify(config.ASSET_URL),
         API_URL: JSON.stringify(config.API_URL),
         NODE_ENV: process.env.NODE_ENV,
       }),

@@ -47,9 +47,10 @@ export class HcEditor {
     viewer.addLayerGroup(this.layerGroup)
     this.plot = new DC.Plot(this.viewer)
   }
-  createLayer(layerId: string) {
+  createLayer(layerId: string, params: LayerProps) {
 
     let layer = new DC.VectorLayer(layerId)
+    layer.attr = params;
     this.layerGroup.addLayer(layer)
     return layer
   }
@@ -69,7 +70,15 @@ export class HcEditor {
   }
   draw(parm: LayerProps) {
     let plot = this.plot,
-      type = parm.type === "Point" ? "billboard" : parm.type.toLocaleLowerCase()
+      type = parm.type === "point" ? "billboard" : parm.type.toLocaleLowerCase()
+
+    if (parm.type === "point") {
+      type = "billboard"
+    } else if (parm.type === "line") {
+      type = "polyline"
+    } else if (parm.type === "plane") {
+      type = "polygon"
+    }
     plot && plot.draw(type, (overlay: DCOverlay) => {
       if (overlay) {
         let layer = this.layerGroup.getLayer(String(parm.id))

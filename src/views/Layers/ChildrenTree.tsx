@@ -6,9 +6,14 @@ import Typography from '@mui/material/Typography';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { useEffect, useState, useCallback } from 'react';
-import { getOverlaysByLayerId, getTypeList } from '../../api/gisReq';
+import {
+  getMaterialList,
+  getOverlaysByLayerId,
+  getTypeList,
+} from '../../api/gisReq';
 import PubSub from 'pubsub-js';
 import CenterFocusStrongIcon from '@mui/icons-material/CenterFocusStrong';
+import { hcOverlay } from '../../core/HcOverlay';
 type StyledTreeItemProps = TreeItemProps & {
   item: any,
   nodeId: string,
@@ -87,7 +92,7 @@ function StyledTreeItem(props: StyledTreeItemProps) {
                   PubSub.publish('FLY_TO_OVERLAY', item);
                 }}
               />
-              <Box
+              {/* <Box
                 component={EditIcon}
                 color="inherit"
                 sx={{ mr: 1 }}
@@ -98,17 +103,14 @@ function StyledTreeItem(props: StyledTreeItemProps) {
                     id: currentId,
                   });
                 }}
-              />
+              /> */}
               <Box
                 component={DeleteIcon}
                 color="inherit"
                 sx={{ mr: 1 }}
-                onClick={(e: { stopPropagation: () => void }) => {
+                onClick={async (e: { stopPropagation: () => void }) => {
                   e.stopPropagation();
-                  PubSub.publish('MSG', {
-                    severity: 'error',
-                    content: '删除',
-                  });
+                  let b = await hcOverlay.delete(item);
                 }}
               />
             </>
@@ -131,9 +133,15 @@ export const ChildrenTree = (props: {
   const [currentId, setCurrentId] = useState('');
   const [overlays, setOverlays] = useState<any[]>([]);
   const fetchData = useCallback(async () => {
-    let overlays1 = await getOverlaysByLayerId({ layerId: String(layerId) });
-    console.log(overlays1);
-    setOverlays([...overlays1]);
+    const filter = { layerId: String(layerId) };
+    let overlays1 = await getMaterialList({
+      filter: JSON.stringify(filter),
+    });
+    if (overlays1) {
+      setOverlays([...overlays1]);
+    } else {
+      setOverlays([]);
+    }
   }, []);
   useEffect(() => {
     fetchData();

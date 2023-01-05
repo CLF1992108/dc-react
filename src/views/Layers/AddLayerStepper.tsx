@@ -70,27 +70,27 @@ interface AddLayerStepperProps {
   id?: number;
 }
 const initBasePointModels = {
-  type: 'Point',
+  type: 'point',
   name: '',
   show: true,
   icon: '',
   pixelSize: 10,
 };
 const initBasePolylineModels = {
-  type: 'Polyline',
+  type: 'line',
   name: '',
   show: true,
-  meterial: '',
-  width: 1
+  material: '',
+  width: 1,
+  brighten: false
 };
 const initBasePolygonModels = {
-  type: 'Polygon',
+  type: 'plane',
   name: '',
   show: true,
-  meterial: '',
+  material: '',
   outline: true,
   outlineColor: '',
-  outlineWidth: 1,
 };
 
 const initBaseOptions = [
@@ -103,17 +103,17 @@ const initBaseOptions = [
     children: [
       {
         key: 1,
-        value: 'Point',
+        value: 'point',
         label: '点',
       },
       {
         key: 2,
-        value: 'Polyline',
+        value: 'line',
         label: '线',
       },
       {
         key: 3,
-        value: 'Polygon',
+        value: 'plane',
         label: '面',
       },
     ],
@@ -135,7 +135,6 @@ const initBaseOptions = [
   
 ];
 const uploadImg = async (e:any)=>{
-  debugger
     console.log(e.target.files[0])
     let urlRes = await upload(e.target.files[0])
     return urlRes
@@ -154,7 +153,7 @@ const basePointOptions = [
             
             let url = await uploadImg(e), val;
             if(url){
-              val = "http://192.168.18.142:8201" + url?.url
+              val = ASSET_URL + url?.url
               changeValue("icon", val)
             }
             
@@ -179,10 +178,10 @@ const basePointOptions = [
 ]
 const basePolylineOptions = [
   {
-    key: 'meterial',
+    key: 'material',
     type: 'Color',
     label: '颜色',
-    name: 'meterial',
+    name: 'material',
     disabled: false,
   },
   {
@@ -192,13 +191,20 @@ const basePolylineOptions = [
     name: 'width',
     disabled: false,
   },
+  {
+    key: 'brighten',
+    type: 'Boolean',
+    label: '发光',
+    name: 'brighten',
+    disabled: false,
+  },
 ]
 const basePolygonOptions = [
   {
-    key: 'meterial',
+    key: 'material',
     type: 'Color',
     label: '颜色',
-    name: 'meterial',
+    name: 'material',
     disabled: false,
   },
   {
@@ -215,13 +221,13 @@ const basePolygonOptions = [
     name: 'outlineColor',
     disabled: false,
   },
-  {
-    key: 'outlineWidth',
-    type: 'Number',
-    label: '边框宽度',
-    name: 'outlineWidth',
-    disabled: false,
-  },
+  // {
+  //   key: 'outlineWidth',
+  //   type: 'Number',
+  //   label: '边框宽度',
+  //   name: 'outlineWidth',
+  //   disabled: false,
+  // },
 ]
 const initCustomOptions = []
 const initDataForm: LayerProps = {
@@ -261,7 +267,9 @@ export const AddLayerStepper: React.FC<AddLayerStepperProps> = ({close, id}) => 
       }
       
       if(b){
+        
         PubSub.publish('REFRESH_LAYER');
+        PubSub.publish("REFRESH_VIEW");
         close()
       }else{
         console.error("操作失败")
@@ -289,7 +297,8 @@ export const AddLayerStepper: React.FC<AddLayerStepperProps> = ({close, id}) => 
     setCustomModels({ ...allVal });
   };
   const addCustomProp = ()=>{
-    customPropArr.push({key:DC.Util.uuid(), name: DC.Util.uuid(), label: "", type: "String", disabled: false})
+    let uuid = DC.Util.uuid()
+    customPropArr.push({key:uuid, name: uuid, label: "", type: "String", disabled: false})
     setCustomPropArr([...customPropArr])
   }
   const delCustomProp = (index:number)=>{
@@ -300,30 +309,35 @@ export const AddLayerStepper: React.FC<AddLayerStepperProps> = ({close, id}) => 
 
   const fetchData = useCallback(async () => {
     let baseOpts, baseMods, panelField;
-    if(baseModels.type === 'Point'){
+    if(baseModels.type === 'point'){
       baseOpts = initBaseOptions.concat(basePointOptions)
-    }else if(baseModels.type === 'Polyline'){
+    }else if(baseModels.type === 'line'){
       baseOpts = initBaseOptions.concat(basePolylineOptions)
-    }else if(baseModels.type === 'Polygon'){
+    }else if(baseModels.type === 'plane'){
       baseOpts = initBaseOptions.concat(basePolygonOptions)
     }
     if(id){
       const res = await VectorLayer.getLayerById(String(id))
-      if(baseModels.type === 'Point'){
+      if(res[0].property !== ""){
         baseMods = {...res[0].property}
-      }else if(baseModels.type === 'Polyline'){
-        baseMods = {...res[0].property}
-      }else if(baseModels.type === 'Polygon'){
-        baseMods = {...res[0].property}
+      }else{
+        if(res[0].type === 'point'){
+          baseMods = {...initBasePointModels}
+        }else if(res[0].type === 'line'){
+          baseMods = {...initBasePolylineModels}
+        }else if(res[0].type === 'plane'){
+          baseMods = {...initBasePolygonModels}
+        }
       }
+      
       initBaseOptions[0].disabled = true;
       panelField = res[0].panelField;
     }else{
-      if(baseModels.type === 'Point'){
+      if(baseModels.type === 'point'){
         baseMods = {...initBasePointModels}
-      }else if(baseModels.type === 'Polyline'){
+      }else if(baseModels.type === 'line'){
         baseMods = {...initBasePolylineModels}
-      }else if(baseModels.type === 'Polygon'){
+      }else if(baseModels.type === 'plane'){
         baseMods = {...initBasePolygonModels}
       }
       initBaseOptions[0].disabled = false;

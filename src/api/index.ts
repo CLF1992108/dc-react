@@ -27,6 +27,6 @@ export const MaterialApi = {
   add: "/admin/fast-go-gis/app/gis/material/add",
   edit: "/admin/fast-go-gis/app/gis/material/edit",
   del: "/admin/fast-go-gis/app/gis/material/del",
-  detail: "/admin/fast-go-gis/app/gis/material/del",
+  detail: "/admin/fast-go-gis/app/gis/material/detail",
   upload: "/admin/fast-go-gis/app/gis/material/upload"
 }

@@ -60,11 +60,11 @@ export type PointLayerAttr = {
   icon: string;
 } & LayerAttr
 export type PolylineLayerAttr = {
-  meterial: string;
+  material: string;
   width: number;
 } & LayerAttr
 export type PolygonLayerAttr = {
-  meterial: string;
+  material: string;
   outline: boolean, //是否显示边框
   outlineColor: string, //边框颜色
   outlineWidth: number, //边框宽度
@@ -146,9 +146,10 @@ export async function getLayerList(params: QueryParamProps) {
     if (result.data) {
       let data = result.data
       if (Array.isArray(data["rows"])) {
-        data["rows"][0].property = data["rows"][0].property && JSON.parse(data["rows"][0].property as string)
-        data["rows"][0].panelField = data["rows"][0].panelField && JSON.parse(data["rows"][0].panelField as string)
-
+        data["rows"].map(row => {
+          row.property = row.property && JSON.parse(row.property as string)
+          row.panelField = row.panelField && JSON.parse(row.panelField as string)
+        })
       }
       return data && data["rows"];
     }
@@ -173,16 +174,23 @@ export async function getMaterialList(params: QueryParamProps) {
   if (result.code === ResponseStatus.Ok) {
     if (result.data) {
       let data = result.data
-      data["rows"][0].property = data["rows"][0].property && JSON.parse(data["rows"][0].property as string)
-      return data && data["rows"];
+      if (Array.isArray(data["rows"])) {
+        data["rows"].map(row => {
+          row.property = row.property && JSON.parse(row.property as string)
+          row.point = row.point && JSON.parse(row.point as string)
+          row.line = row.line && JSON.parse(row.line as string)
+          row.plane = row.plane && JSON.parse(row.plane as string)
+        })
+        return data && data["rows"];
+      }
     }
 
   }
   return null
 }
 export async function addMaterial(params: MaterialProps) {
-  const result = await postReq(MaterialApi.add, params)
-  return result.code === ResponseStatus.Ok
+  const result = await postReq(MaterialApi.add, { Row: params })
+  return result?.data?.id
 }
 export async function addMaterialLocal(params: MaterialProps) {
 
@@ -203,6 +211,25 @@ export async function editMaterial(ids: number, row: MaterialProps) {
 export async function delMaterial(ids: string) {
   const result = await postReq(MaterialApi.del, { ids })
   return result.code === ResponseStatus.Ok
+}
+
+export async function getMaterialDetail(ids: string) {
+  const result: any = await postReq(MaterialApi.detail, { ids })
+  if (result.code === ResponseStatus.Ok) {
+    if (result.data) {
+      let data = result.data
+      if (Array.isArray(data["rows"])) {
+        data["rows"].map(row => {
+          row.property = row.property && JSON.parse(row.property as string)
+          row.panelField = row.panelField && JSON.parse(row.panelField as string)
+          row.panelVal = row.panelVal && JSON.parse(row.panelVal as string)
+        })
+        return data && data["rows"];
+      }
+    }
+
+  }
+  return null
 }
 export async function uploadMaterial(params: UploadMaterialProps) {
   const fd = new FormData();
@@ -412,186 +439,6 @@ export async function getTypeList(params: any) {
     ]
   }
 
-  return result;
-}
-export async function getPropsListByType(params: { type: String }) {
-  // const result = await axios(GisApi.typeList, {
-  //   params: params,
-  // });
-  let result
-  if (params.type === "billboard") {
-    result = {
-      "result": [
-        {
-          "key": "FC1",
-          "type": "string",
-          "label": "客户名称",
-          "name": "FC1",
-          disabled: false
-        },
-        {
-          "key": "FC3",
-          "type": "Boolean",
-          "label": "是否重要",
-          "name": "FC3",
-          disabled: false
-        },
-        {
-          key: 'FC2',
-          name: 'FC2',
-          label: '客户类型',
-          type: 'List',
-          children: [
-            {
-              key: 1,
-              value: 1,
-              label: '商业用户',
-            },
-            {
-              key: 2,
-              value: 2,
-              label: '工业用户',
-            },
-            {
-              key: 3,
-              value: 3,
-              label: '居民用户',
-            },
-          ],
-          disabled: false
-        },
-        // {
-        //   "key": "FC3",
-        //   "type": string,
-        //   "label": "客户",
-        //   "name": "FC3"
-        // },
-        // {
-        //   "key": "FC4",
-        //   "type": string,
-        //   "label": "客户",
-        //   "name": "FC4"
-        // },
-        // {
-        //   "key": "FC5",
-        //   "type": string,
-        //   "label": "客户",
-        //   "name": "FC5"
-        // },
-        // {
-        //   "key": "FC6",
-        //   "type": string,
-        //   "label": "客户",
-        //   "name": "FC6"
-        // },
-        // {
-        //   "key": "FC7",
-        //   "type": string,
-        //   "label": "客户",
-        //   "name": "FC7"
-        // },
-        // {
-        //   "key": "FC8",
-        //   "type": string,
-        //   "label": "客户",
-        //   "name": "FC8"
-        // },
-        // {
-        //   "key": "FC9",
-        //   "type": string,
-        //   "label": "客户",
-        //   "name": "FC9"
-        // },
-
-      ]
-    }
-  } else if (params.type === "polyline") {
-    result = {
-      "result": [
-        {
-          "key": "FC1",
-          "type": "string",
-          "label": "字段4",
-          "name": "FC1",
-          disabled: true
-        },
-        {
-          "key": "FC2",
-          "type": "string",
-          "label": "字段5",
-          "name": "FC2",
-          disabled: true
-        },
-        {
-          "key": "FC3",
-          "type": "string",
-          "label": "字段6",
-          "name": "FC3",
-          disabled: true
-        },
-        // {
-        //   key: 'type',
-        //   name: 'type',
-        //   label: '元素类别',
-        //   type: 'List',
-        //   children: [
-        //     {
-        //       key: 1,
-        //       value: '2d',
-        //       label: '2D元素',
-        //     },
-        //     {
-        //       key: 2,
-        //       value: '3d',
-        //       label: '3D元素',
-        //     },
-        //     {
-        //       key: 3,
-        //       value: 'model',
-        //       label: '模型',
-        //     },
-        //     {
-        //       key: 4,
-        //       value: 'project',
-        //       label: '项目',
-        //     },
-        //     {
-        //       key: 5,
-        //       value: 'app',
-        //       label: '场景',
-        //     },
-        //   ],
-        //   disabled: true
-        // },
-      ]
-    }
-  } else {
-    result = {
-      "result": [
-        {
-          "key": "FC7",
-          "type": "string",
-          "label": "字段7",
-          "name": "FC7",
-          disabled: true
-        },
-        {
-          "key": "FC8",
-          "type": "Boolean",
-          "label": "字段8",
-          "name": "FC8",
-          disabled: true
-        },
-        {
-          "key": "FC9",
-          "type": "Number",
-          "label": "字段9",
-          "name": "FC9",
-          disabled: true
-        }
-      ]
-    }
-  }
   return result;
 }
 export async function getOverlaysByLayerId(params: { layerId: string }) {

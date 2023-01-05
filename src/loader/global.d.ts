@@ -5,5 +5,6 @@ declare global {
   var Config: any
   var Http: any
   var API_URL: any
+  var ASSET_URL: any
 }
 export { }

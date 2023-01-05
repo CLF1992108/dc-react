@@ -1,4 +1,4 @@
-import { addMaterial, addMaterialLocal, deleteOverlay, LayerProps, updateOverlay } from "../api/gisReq";
+import { addMaterial, addMaterialLocal, deleteOverlay, delMaterial, editMaterial, LayerProps, MaterialProps, updateOverlay } from "../api/gisReq";
 import { hcEditor } from "../store/HcEditor";
 import PubSub from 'pubsub-js'
 import { urlSearch } from "../utils/util";
@@ -14,7 +14,7 @@ class HcOverlay {
   async add(overlay: any, layer: any, parm: LayerProps) {
     let plot = hcEditor.Plot
     this.setOverlayAttr(overlay, parm)
-    let id = await addMaterialLocal(overlay.attr)
+    let id = await addMaterial(overlay.attr)
     if (!id) {
       return PubSub.publish("MSG", {
         severity: "error",
@@ -22,24 +22,43 @@ class HcOverlay {
       })
     }
     PubSub.publish("MSG", {
-      severity: "error",
+      severity: "success",
       content: "添加成功"
     })
     PubSub.publish("REFRESH_OVERLAY")
     overlay.attr.id = id
-    debugger
     overlay.attr.name = overlay.attr.name + id
     console.log(overlay.attr.id)
     layer.addOverlay(overlay)
     plot.edit(overlay)
-    overlay.icon = parm.property['icon']
-    overlay.setStyle({
-      width: layer?.attr?.width,
-      "material": new Cesium.Color.fromCssColorString(parm.property['color']), //颜色
-    })
+    if (parm.type === "point") {
+      overlay.icon = parm.property['icon']
+    } else if (parm.type === "line") {
+
+      overlay.setStyle({
+        width: parm.property['width'],
+        material: new Cesium.Color.fromCssColorString(parm.property['material']), //颜色
+      })
+      if (parm.property['brighten']) {
+        overlay.setStyle({
+          width: parm.property['width'],
+
+          material: new DC.PolylineLightingMaterialProperty({
+            color: new Cesium.Color.fromCssColorString(parm.property['material']),
+          })
+        })
+      }
+    } else {
+      overlay.setStyle({
+        height: 1, //高度
+        material: new Cesium.Color.fromCssColorString(parm.property['material']), //颜色
+        outline: parm.property['outline'], //是否显示边框
+        outlineColor: new Cesium.Color.fromCssColorString(parm.property['outlineColor']), //是否显示边框
+      })
+    }
     overlay.on(DC.MouseEventType.CLICK, () => {
       plot.edit(overlay, () => {
-        hcOverlay.update(overlay)
+        hcOverlay.update(overlay.attr)
       })
     })
     overlay.on(DC.MouseEventType.RIGHT_CLICK, (e: any) => {
@@ -49,33 +68,87 @@ class HcOverlay {
     })
     return overlay
   }
-  update(params: Record<string, unknown>) {
-    updateOverlay(params)
-    return true
-  }
-  delete(overlay: any) {
-    const layer = hcEditor.getLayer(overlay.attr.type)
-    layer.removeOverlay(overlay)
-    deleteOverlay({})
+  async update(params: MaterialProps) {
+    if (params.type === "point") {
 
+    } else if (params.type === "line") {
+      if (typeof params.line !== "string") {
+        let posStr = ""
+        let coordinates = (params.line as any).coordinates
+
+        Array.isArray(coordinates) && coordinates.forEach((p: any, index: number) => {
+          if (index !== (coordinates.length - 1)) {
+            posStr = posStr + `${p[0]} ${p[1]},`
+          } else {
+            posStr = posStr + `${p[0]} ${p[1]}`
+          }
+
+        })
+        params.line = posStr
+      }
+    } else {
+      if (typeof params.plane !== "string") {
+        let posStr = ""
+        let coordinates = (params.plane as any).coordinates[0]
+        Array.isArray(coordinates) && coordinates.forEach((p: any, index: number) => {
+          if (index !== (coordinates.length - 1)) {
+            posStr = posStr + `${p[0]} ${p[1]},`
+          } else {
+            posStr = posStr + `${p[0]} ${p[1]}`
+          }
+
+        })
+        params.plane = posStr
+      }
+    }
+    let b = params.id && await editMaterial(params.id, params)
+    return b
   }
+  async delete(item: any) {
+    let b = await delMaterial(item.id)
+    if (b) {
+      let layer = hcEditor.getLayer(item.layerId)
+      let overlay = layer.getOverlaysByAttr('id', item.id)[0]
+      layer.removeOverlay(overlay)
+      PubSub.publish('REFRESH_OVERLAY');
+    }
+
+    return b
+  }
+
   setOverlayAttr(overlay: any, parm: LayerProps) {
-    let pos = overlay?.position;
-    let posArr = overlay?.positions && overlay?.positions.map((p: any) => [p.lng, p.lat, p.alt]);
-
+    let pos = overlay?.position, posStr = "", altStr = "";
     overlay.attr = {
-      sceneId: urlSearch("guid"),
+      sceneId: Number(urlSearch("guid")),
       layerId: parm.id,
-      uuid: "",
       name: parm.name,
       type: parm.type,
-      point: pos ? [pos.lng, pos.lat, pos.alt] : "",
-      line: posArr ? posArr : "",
-      plane: posArr ? posArr : "",
+      point: pos ? `${pos.lng} ${pos.lat} ` : "",
       property: "",
       panelVal: "",
     }
-    console.log("====", overlay.attr)
+    Array.isArray(overlay?.positions) && overlay?.positions.forEach((p: any, index: number) => {
+      if (index !== (overlay?.positions.length - 1)) {
+        console.log(overlay?.positions.length, index)
+        posStr = posStr + `${p.lng} ${p.lat},`
+        altStr = altStr + `${p.alt}, `
+      } else {
+        posStr = posStr + `${p.lng} ${p.lat}`
+        altStr = altStr + `${p.alt} `
+      }
+
+    })
+    if (parm.type === "point") {
+      altStr = pos.alt
+    }
+    if (parm.type === "line") {
+      overlay.attr.line = posStr
+
+    } else if (parm.type === "plane") {
+
+      overlay.attr.plane = posStr + `, ${overlay?.positions[0]?.lng} ${overlay?.positions[0]?.lat}`
+    }
+    overlay.attr.height = altStr
   }
 }
 export const hcOverlay = new HcOverlay()

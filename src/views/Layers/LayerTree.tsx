@@ -146,9 +146,10 @@ export const LayerTree = () => {
     let res = await VectorLayer.getAllLayers();
       if(res){
         setLayers([...layers, ...res])
-        res.forEach((element:LayerProps) => {
-          element.id && hcEditor.createLayer(String(element.id))
-        });
+        Array.isArray(res) && res.forEach((element: LayerProps) => {
+          let layer =
+            element.id && hcEditor.createLayer(String(element.id), element);
+        })
       }else{
         setLayers([])
       };
