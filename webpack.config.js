@@ -22,6 +22,7 @@ module.exports = (env, argv) => {
     },
     devtool: IS_PROD ? false : 'cheap-module-source-map',
     devServer: {
+      host: '0.0.0.0',
       proxy: {
         '/admin/fast-go-gis/': {
           target: 'http://192.168.18.142:9999', //请求本地 

@@ -28,11 +28,11 @@ class HcOverlay {
     PubSub.publish("REFRESH_OVERLAY")
     overlay.attr.id = id
     overlay.attr.name = overlay.attr.name + id
-    console.log(overlay.attr.id)
     layer.addOverlay(overlay)
     plot.edit(overlay)
     if (parm.type === "point") {
       overlay.icon = parm.property['icon']
+      overlay.size = [parm.property['pixelSize'], parm.property['pixelSize']]
     } else if (parm.type === "line") {
 
       overlay.setStyle({
@@ -48,6 +48,15 @@ class HcOverlay {
           })
         })
       }
+      if (parm.property['brightenflow']) {
+        overlay.setStyle({
+          width: parm.property['width'],
+
+          material: new DC.PolylineLightingTrailMaterialProperty({
+            color: new Cesium.Color.fromCssColorString(parm.property['material']),
+          })
+        })
+      }
     } else {
       overlay.setStyle({
         height: 1, //高度
@@ -57,6 +66,13 @@ class HcOverlay {
       })
     }
     overlay.on(DC.MouseEventType.CLICK, () => {
+      if (layer.attr['property']['brightenflow']) {
+        PubSub.publish('MSG', {
+          severity: 'error',
+          content: '发光流动线不可编辑，先取消选择',
+        });
+        return;
+      }
       plot.edit(overlay, () => {
         hcOverlay.update(overlay.attr)
       })
@@ -70,7 +86,11 @@ class HcOverlay {
   }
   async update(params: MaterialProps) {
     if (params.type === "point") {
+      if (typeof params.point !== "string") {
+        let coordinates = (params.point as any).coordinates
 
+        params.point = `${coordinates[0]} ${coordinates[1]}`
+      }
     } else if (params.type === "line") {
       if (typeof params.line !== "string") {
         let posStr = ""

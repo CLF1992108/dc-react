@@ -82,7 +82,8 @@ const initBasePolylineModels = {
   show: true,
   material: '',
   width: 1,
-  brighten: false
+  brighten: false,
+  brightenflow: false,
 };
 const initBasePolygonModels = {
   type: 'plane',
@@ -94,6 +95,30 @@ const initBasePolygonModels = {
 };
 
 const initBaseOptions = [
+  {
+    key:'source',
+    type: 'Radio',
+    label: '来源',
+    name: 'source',
+    disabled: false,
+    children: [
+      {
+        key: 1,
+        value: 'draw',
+        label: '绘制',
+      },
+      {
+        key: 2,
+        value: 'iots',
+        label: '物联网',
+      },
+      {
+        key: 3,
+        value: 'inspection',
+        label: '巡检',
+      },
+    ],
+  },
   {
     key: 'type',
     type: 'Radio',
@@ -125,13 +150,13 @@ const initBaseOptions = [
     name: 'name',
     disabled: false,
   },
-  {
-    key: 'show',
-    type: 'Boolean',
-    label: '显示',
-    name: 'show',
-    disabled: false,
-  },
+  // {
+  //   key: 'show',
+  //   type: 'Boolean',
+  //   label: '显示',
+  //   name: 'show',
+  //   disabled: false,
+  // },
   
 ];
 const uploadImg = async (e:any)=>{
@@ -196,6 +221,13 @@ const basePolylineOptions = [
     type: 'Boolean',
     label: '发光',
     name: 'brighten',
+    disabled: false,
+  },
+  {
+    key: 'brightenflow',
+    type: 'Boolean',
+    label: '发光流动',
+    name: 'brightenflow',
     disabled: false,
   },
 ]
@@ -329,7 +361,7 @@ export const AddLayerStepper: React.FC<AddLayerStepperProps> = ({close, id}) => 
           baseMods = {...initBasePolygonModels}
         }
       }
-      
+      baseMods.name = res[0].name
       initBaseOptions[0].disabled = true;
       panelField = res[0].panelField;
     }else{

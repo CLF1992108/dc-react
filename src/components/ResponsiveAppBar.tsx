@@ -66,8 +66,6 @@ const ResponsiveAppBar: React.FC<ResponsiveAppBarProps> = ({ onClick }) => {
         >
           保存
         </Box>
-        <Divider orientation="vertical" flexItem sx={{ bgcolor: '#fff' }} />
-        <Box sx={{ cursor: 'pointer', pl: 2, pr: 2 }}>预览</Box>
       </Toolbar>
       <UploadVector
         open={open}

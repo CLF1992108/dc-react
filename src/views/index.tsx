@@ -144,17 +144,18 @@ const App: React.FC<AppProps> = (AppProps) => {
     });
     Array.isArray(res) &&
       res.forEach((element: any) => {
+        debugger;
         let overlay: any;
         if (element.type === 'point') {
           let position = new DC.Position(
             element.point.coordinates[0],
             element.point.coordinates[1]
           );
-          // http://192.168.18.142:8201/uploads/2023/0105/cpjw8pquhzq0hzrcax.jpg
-          overlay = new DC.Billboard(
-            position,
-            'http://am-img.gkiiot.com/editor/textures/暖色2.jpg'
-          );
+          overlay = new DC.Billboard(position, layer.attr.property['icon']);
+          overlay.size = [
+            layer.attr.property['pixelSize'],
+            layer.attr.property['pixelSize'],
+          ];
         } else if (element.type === 'line') {
           overlay = new DC.Polyline(element.line.coordinates);
           overlay.setStyle({
@@ -167,6 +168,16 @@ const App: React.FC<AppProps> = (AppProps) => {
             overlay.setStyle({
               width: layer.attr.property.width,
               material: new DC.PolylineLightingMaterialProperty({
+                color: new Cesium.Color.fromCssColorString(
+                  layer.attr.property.material
+                ),
+              }),
+            });
+          }
+          if (layer.attr.property['brightenflow']) {
+            overlay.setStyle({
+              width: layer.attr.property.width,
+              material: new DC.PolylineLightingTrailMaterialProperty({
                 color: new Cesium.Color.fromCssColorString(
                   layer.attr.property.material
                 ),
@@ -189,9 +200,23 @@ const App: React.FC<AppProps> = (AppProps) => {
         overlay.attr = element;
         layer.addOverlay(overlay);
         overlay.on(DC.MouseEventType.CLICK, () => {
-          hcEditor.Plot.edit(overlay, () => {
-            hcOverlay.update(overlay.attr);
-          });
+          try {
+            let layer = hcEditor.LayerGroup.getLayer(
+              String(overlay.attr.layerId)
+            );
+            if (layer.attr['property']['brightenflow']) {
+              PubSub.publish('MSG', {
+                severity: 'error',
+                content: '发光流动线不可编辑，先取消选择',
+              });
+              return;
+            }
+            hcEditor.Plot.edit(overlay, () => {
+              hcOverlay.update(overlay.attr);
+            });
+          } catch (e) {
+            console.log('发光线不可编辑');
+          }
         });
         overlay.on(DC.MouseEventType.RIGHT_CLICK, (e: any) => {
           hcEditor.CurrentOverlay = overlay;

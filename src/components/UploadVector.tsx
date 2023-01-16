@@ -79,6 +79,7 @@ export const UploadVector: React.FC<UploadVectorProps> = ({ open, close }) => {
       })
       close()
       PubSub.publish('REFRESH_LAYER');
+      PubSub.publish('REFRESH_VIEW');
     }else{
       PubSub.publish("MSG", {
         severity: "error",

@@ -15,6 +15,7 @@ import { hcEditor } from "../../store/HcEditor";
 import PubSub from "pubsub-js";
 import { VectorLayer } from "../../core/Layer/VectorLayer";
 import { LayerProps } from "../../api/gisReq";
+import { Checkbox } from "@mui/material";
 
 declare module "react" {
   interface CSSProperties {
@@ -78,6 +79,7 @@ function StyledTreeItem(props: StyledTreeItemProps) {
     currentId,
     ...other
   } = props;
+  const [checked, setChecked] = React.useState(true);
   const handleClick = (item: LayerProps) => {
     
     return (e: { stopPropagation: () => void; }) => {
@@ -85,12 +87,18 @@ function StyledTreeItem(props: StyledTreeItemProps) {
       hcEditor.draw(item);
     };
   };
+  const handleChange = (e: any)=>{
+    setChecked(e.target.checked);
+    let layer = (item.id && hcEditor.LayerGroup.getLayer(String(item.id)))
+    if(layer){layer.show = e.target.checked}
+    
+  }
   return (
     <StyledTreeItemRoot
       nodeId={nodeId}
       label={
         <Box sx={{ display: "flex", alignItems: "center", p: 0.5, pr: 0 }}>
-          {/* <Box component={LabelIcon} color="inherit" sx={{ mr: 1 }} /> */}
+          <Checkbox sx={{p:0}} onClick={(e:any)=>{e.stopPropagation()}} onChange={handleChange} checked={checked}/>
           <Typography
             variant="body2"
             sx={{ fontWeight: "inherit", flexGrow: 1 }}
